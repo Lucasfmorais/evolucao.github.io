@@ -11,7 +11,7 @@ function init() {
             format: new ol.format.GeoJSON({
                 defaultDataProjection: 'EPSG:4326'
             }),
-            url: "CapitaisMundiais.geojson",
+            url: "./layers/CapitaisMundiais.geojson",
             attributions: [
                 new ol.Attribution({
                     html: '\271\nCapitais do Mundo\n '
@@ -50,7 +50,7 @@ function init() {
             format: new ol.format.GeoJSON({
                 defaultDataProjection: 'EPSG:4326'
             }),
-            url: "Brasil.geojson",
+            url: "./layers/Brasil.geojson",
             attributions: [
                 new ol.Attribution({
                     html: '\262\nFeição do Brasil\n '
@@ -65,7 +65,7 @@ function init() {
             format: new ol.format.GeoJSON({
                 defaultDataProjection: 'EPSG:4326'
             }),
-            url: "armazens.geojson",
+            url: "./layers/armazens.geojson",
             attributions: [
                 new ol.Attribution({
                     html: '\262\nFeição do Brasil2\n '
