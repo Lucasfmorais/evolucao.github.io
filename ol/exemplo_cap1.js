@@ -50,7 +50,7 @@ function init() {
             format: new ol.format.GeoJSON({
                 defaultDataProjection: 'EPSG:4326'
             }),
-            url: "./layers/Brasil.geojson",
+            url: "./layers/brasil.geojson",
             attributions: [
                 new ol.Attribution({
                     html: '\262\nFeição do Brasil\n '
