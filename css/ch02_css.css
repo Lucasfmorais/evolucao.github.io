@@ -13,11 +13,11 @@ body {
 }
 
 .ol-control button:focus {
-    background-color: rgba(2, 58, 7, 0.822);
+    background-color: rgba(38, 134, 46, 0.651);
 }
 
 .ol-control button:hover {
-    background-color: rgb(2, 58, 7, 0.822);
+    background-color: rgb(38, 134, 46, 0.651);
 }
 
 .ol-scale-line {
@@ -39,7 +39,7 @@ body {
 }
 
 .ol-attribution ul {
-    background-image: url(../../../res/university_of_pecs_transparent.png);
+    /* background-image: url(../../../../../../res/university_of_pecs_transparent.png); */
     background-size: contain;
     background-position: 50%;
     background-repeat: no-repeat;
@@ -86,6 +86,7 @@ tablets e celulares.*/
     top: calc(1.755em + 6px);
     left: calc(.01em + 12px);
     width: 20px;
+    height:25%;
     background-color: rgba(63, 219, 76, 0.5);
     box-shadow: 0 0 5px rgba(63, 219, 76, 0.884);
     border-radius: 20px /* deixa a borda da barra arrendodada */
@@ -98,7 +99,8 @@ tablets e celulares.*/
     font-size: 1.14em;
 }
 .ol-zoomslider:hover {
-    background-color: rgba(2, 58, 7, 0.822);
+    background-color: rgba(38, 134, 46, 0.651);
+    height:25%;
 }
 
 .ol-overviewmap.ol-uncollapsible {
@@ -106,5 +108,13 @@ tablets e celulares.*/
 }
 
 .ol-MousePosition{
-    background-color: rgba(2, 58, 7, 0.822);
+    background-color: rgba(38, 134, 46, 0.651);
 }
+
+.info-label {
+    font-family: Palatino, serif;
+    font-style: italic;
+    }
+.ol-attribution img {
+    max-width: 2em;
+    }

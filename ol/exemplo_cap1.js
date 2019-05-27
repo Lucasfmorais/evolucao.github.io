@@ -105,7 +105,7 @@ function init() {
                 units:'metric'
             }),
             new ol.control.OverviewMap({
-                collapsible:false
+                collapsible:true
             })
         ],
         interactions: ol.interaction.defaults().extend([
@@ -119,8 +119,19 @@ function init() {
             center: ol.proj.fromLonLat([-51.74245,-17.95222]),
             zoom: 7
         }),
+        logo: {
+            src: '../../../../../../res/university_of_pecs_transparent.png',
+            href: 'http://www.ttk.pte.hu/en'
+            }
     });
+    var infoLabel = document.createElement('span');
+    infoLabel.className = 'info-label';
+    infoLabel.textContent = 'i';
+    new ol.control.Attribution({
+        label: infoLabel
+    })
 }
+
 
 document.addEventListener('DOMContentLoaded', init);
 
