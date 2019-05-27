@@ -85,7 +85,6 @@ function init() {
             vectorBrasil,vectorLayer,vectorArmazens
         ],
         controls: [
-
             //Definindo os controles padrões
             new ol.control.Zoom(),
             new ol.control.Rotate({
@@ -94,12 +93,19 @@ function init() {
             new ol.control.Attribution(),
             //Definindo alguns novos controles
             new ol.control.ZoomSlider(),
-            new ol.control.MousePosition(),
+            new ol.control.MousePosition({ /* Realiza o truncamenta para 3 casas decimais após a virgula. */
+                coordinateFormat: function (coordinates) {
+                var coord_x = coordinates[0].toFixed(3);
+                var coord_y = coordinates[1].toFixed(3);
+                return "<table border='0'BGCOLOR=white><tr><td>Longitude: </td>"+ "<td>"+ coord_x +"</td>"+ 
+                            "</tr>"+"<tr>" + "<td>Latitude: </td>"+ "<td>"+ coord_y + "</td>" +"</table>";
+                }
+            }),
             new ol.control.ScaleLine({
                 units:'metric'
             }),
             new ol.control.OverviewMap({
-                collapsible:true
+                collapsible:false
             })
         ],
         interactions: ol.interaction.defaults().extend([
