@@ -3,13 +3,24 @@
     <head>
         <meta charset="utf-8">
         <meta name="Autor" content="Lucas Ferreira de Morais" >
-        <title>Capitulo1 - Criando um simples mapa</title>
+        <title>Capitulo 3 - Criando uma árvore de camadas</title>
         <link href="./css/ol.css" rel="stylesheet">
-        <link href="./css/ch02_css.css" rel="stylesheet">
+        <link href="./css/CAP3_ArvoreLayer.css" rel="stylesheet">
         <script type="text/javascript" src="./ol/ol.js"></script>
-        <script type="text/javascript" src="./ol/exemplo_cap1.js"></script>
+        <script type="text/javascript" src="./ol/CAP3_ArvoreLayer.js"></script>
+
     </head>
     <body>
-        <div id="map" class="map"></div>
+        <div class="map-container">
+            <div id="toolbar" class="toolbar"></div>
+            <div id="layertree" class="layertree"></div>
+            <div id="map" class="map">
+                <div class="nosupport">Seu navegador não parece suportar este aplicativo. Por favor, realise a atualização.</div>
+            </div>
+            <div class="notification-bar">
+                <div id="messageBar" class="message-bar"></div>
+                <div id="coordinates"></div>
+            </div>
+        </div>
     </body>
 </html>

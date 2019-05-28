@@ -41,12 +41,12 @@ body {
 .ol-attribution ul {
     /* background-image: url(../../../../../../res/university_of_pecs_transparent.png); */
     background-size: contain;
-    background-position: 50%;
+    background-position: 10%;
     background-repeat: no-repeat;
 }
 
 .ol-attribution li {
-    display: table;
+    display: table-cell;
 }
 
 .ol-zoom .ol-zoom-in {
@@ -113,8 +113,9 @@ tablets e celulares.*/
 
 .info-label {
     font-family: Palatino, serif;
-    font-style: italic;
-    }
+    font-style: bold;
+    font-size: .5em;
+}
 .ol-attribution img {
-    max-width: 2em;
-    }
+    max-width: 1.2em;
+}

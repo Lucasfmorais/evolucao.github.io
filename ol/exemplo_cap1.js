@@ -1,10 +1,14 @@
 function init() {
     document.removeEventListener('DOMContentLoaded', init);
-    
-    ol.events.condition.custom = function(mapBrowserEvent) {
+
+    var infoLabel = document.createElement('span');
+    infoLabel.className = 'info-label';
+    infoLabel.textContent = 'inf';
+
+/*     ol.events.condition.custom = function(mapBrowserEvent) {
             var browserEvent = mapBrowserEvent.originalEvent;
             return (browserEvent.ctrlKey);
-    };
+    }; */
 
     var vectorLayer = new ol.layer.Vector({
         source: new ol.source.Vector({
@@ -14,7 +18,7 @@ function init() {
             url: "./layers/CapitaisMundiais.geojson",
             attributions: [
                 new ol.Attribution({
-                    html: '\271\nCapitais do Mundo\n '
+                    html: '<span style="padding-left:2px">Capitais do Mundo,</span>'
                 })
             ]
         }),
@@ -53,11 +57,10 @@ function init() {
             url: "./layers/brasil.geojson",
             attributions: [
                 new ol.Attribution({
-                    html: '\262\nFeição do Brasil\n '
+                    html: '<span style="padding-left:2px">Feição do Brasil, </span>'
                 })
             ]
         }),
-
     });
 
     var vectorArmazens = new ol.layer.Vector({
@@ -68,10 +71,9 @@ function init() {
             url: "./layers/armazens.geojson",
             attributions: [
                 new ol.Attribution({
-                    html: '\262\nFeição do Brasil2\n '
+                    html: '<span style="padding-right:2px">Feição do Brasil2</span>'
                 })
             ],
-            
         }),
         style: pointStyle
     });
@@ -90,7 +92,9 @@ function init() {
             new ol.control.Rotate({
                 autoHide: true
             }),
-            new ol.control.Attribution(),
+            new ol.control.Attribution({
+                label: infoLabel
+            }),
             //Definindo alguns novos controles
             new ol.control.ZoomSlider(),
             new ol.control.MousePosition({ /* Realiza o truncamenta para 3 casas decimais após a virgula. */
@@ -120,18 +124,10 @@ function init() {
             zoom: 7
         }),
         logo: {
-            src: '../../../../../../res/university_of_pecs_transparent.png',
-            href: 'http://www.ttk.pte.hu/en'
+            src: './pictures/boxgeo.png',
+            href: 'https://geoconn-site.webflow.io/'
             }
     });
-    var infoLabel = document.createElement('span');
-    infoLabel.className = 'info-label';
-    infoLabel.textContent = 'i';
-    new ol.control.Attribution({
-        label: infoLabel
-    })
 }
-
-
 document.addEventListener('DOMContentLoaded', init);
 
