@@ -47,11 +47,12 @@ body {
     display: table-cell;
     vertical-align: middle;
     padding: 0;
+    background-color: rgba(11, 11, 12, 0)
     
 }
 .toolbar .ol-control button {
     border-radius: 2px;
-    background-color: rgba(11, 12, 11, 0.918);
+    background-color: rgba(11, 11, 12, 0.918);
     width: 2em;
     display: inline-block;
 }
@@ -70,11 +71,13 @@ body {
 .layertree .layertree-buttons {
     height: 2em;
     border-bottom: 1px solid grey;
+    background-color: rgba(11, 11, 12, 0.279)
 }
 .layertree .layercontainer {
     position: relative;
     height: calc(100% - 2em);
     overflow-y: auto;
+    background-color: rgba(11, 11, 12, 0)
 }
 .layercontainer .layer {
     position: relative;
@@ -83,6 +86,7 @@ body {
     height: 2em;
     margin: 2px 0 2px 0;
     line-height: 2em;
+    background-color: rgba(11, 11, 12, 0.279)
 }
 .layer span:first-of-type {
     position: absolute;
@@ -107,8 +111,8 @@ body {
     padding: 0;
     margin: 0 2px 0 2px;
     border: none;
-    color: rgba(255,255,255,1);
-    background-color: rgba(243, 247, 244, 0.932);
+    color: rgba(11, 11, 12, 0.279);
+    background-color: rgba(21, 106, 42, 0.932);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: 50%;
@@ -120,23 +124,25 @@ body {
     vertical-align: middle;
 }
 .layertree .layertree-buttons button:hover {
-    background-color: rgba(42, 46, 43, 0.802);
+    background-color: rgba(29, 196, 71, 0.802);
 }
 .layertree-buttons .addwms {
     background-image: url(../pictures/button_wms.png);
+    
 }
 .layertree-buttons .addwfs {
     background-image: url(../pictures/button_wmf.png);
 }
 .toggleable {
     position: fixed;
-    background-color: rgba(0,0,0,.5);
+    background-color: rgba(250, 250, 250, 0.489);
     width: 100%;
     height: 100vh;
     top: 0;
 }
 .addlayer {
-    background-color: rgba(255,255,255,1);
+    background-color: rgb(245, 243, 243);
+    border: 1px solid rgb(19, 18, 18);
     position: relative;
     top: 50%;
     left: 50%;
@@ -152,4 +158,46 @@ body {
 }
 .error {
 	border-color: red;
+}
+
+#popup-content>ul>li:nth-child(even) {
+    background-color: #eee;
+}
+
+#popup-content ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+#popup-content li {
+    margin-bottom:0.25em;
+}
+
+.ol-popup-closer {
+    text-decoration: none;
+    position: absolute;
+    top: 2px;
+    right: 8px;
+}
+
+.ol-popup-closer:after {
+    content: "X";
+}
+.ol-popup {
+    display: none;
+    position: absolute;
+    background-color: white;
+    -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+    bottom: 12px;
+    left: -50px;   
+    height: auto;
+    width: auto;
+    min-width: 100px;
+    max-height:400px;  
+    overflow: auto;      
 }

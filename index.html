@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="Autor" content="Lucas Ferreira de Morais" >
-        <title>Capitulo 3 - Criando uma árvore de camadas</title>
+        <title>Capítulo 3 - Criando uma árvore de camadas</title>
         <link href="./css/ol.css" rel="stylesheet">
         <link href="./css/CAP3_ArvoreLayer.css" rel="stylesheet">
         <script type="text/javascript" src="./ol/ol.js"></script>
@@ -13,7 +13,12 @@
         <div class="map-container">
             <div id="toolbar" class="toolbar"></div>
             <div id="layertree" class="layertree"></div>
-            <div id="map" class="map"></div>
+            <div id="map" class="map">
+                <div id="popup" class="ol-popup">
+                    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                    <div id="popup-content"></div>
+                </div>
+            </div>
             <div class="notification-bar">
                 <div id="messageBar" class="message-bar"></div>
                 <div id="coordinates"></div>
@@ -21,7 +26,7 @@
         </div>
         <div id="addwms" class="toggleable" style="display: none;">
             <form id="addwms_form" class="addlayer">
-                <p>Adiconar camada WMS</p>
+                <p><center>Adiconar camada WMS</center></p>
                 <table>
                     <tr>
                         <td>Server URL:</td>
@@ -53,7 +58,7 @@
         </div>
         <div id="addwfs" class="toggleable" style="display: none;">
             <form id="addwfs_form" class="addlayer">
-                <p>Adiconar camada WMF</p>
+                <p><center>Adiconar camada WFS</center></p>
                 <table>
                     <tr>
                         <td>Server URL:</td>
@@ -64,15 +69,18 @@
                         <td><input name="layer" type="text" required="required" value="Cidades"></td>
                     </tr>
                     <tr>
-                        <td>Display name:</td>
+                        <td>Nome para referência:</td>
                         <td><input name="displayname" type="text"></td>
                     </tr>
                     <tr>
                         <td>Projeção:</td>
-                        <td><input name="projection" type="text" value="EPSG:4326"></td>
+                        <td><select name="projection" type="multiple" style="width: 15px">
+                            <option value="EPSG:4326">WGS 84</option>
+                            <option value="EPSG:4988">SIRGAS 2000</option>
+                        </td>
                     </tr>
                     <tr>
-                        <td><input type="submit" value="Adicionar camadar"></td>
+                        <td><input type="submit" value="Adicionar camada"></td>
                         <td><input type="button" value="Cancelar" onclick="this.form.parentNode.style.display = 'none'"></td>
                     </tr>
                 </table>
