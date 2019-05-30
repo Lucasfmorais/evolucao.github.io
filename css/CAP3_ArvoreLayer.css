@@ -1,6 +1,6 @@
 body {
     margin: 0px;
-    background-color: rgba(10, 106, 16, 0.802);
+    background-color: rgba(244, 245, 244, 0.938);
 }
 .map-container {
     width: 100%;
@@ -51,12 +51,12 @@ body {
 }
 .toolbar .ol-control button {
     border-radius: 2px;
-    background-color: rgba(20, 123, 41, 0.5);
+    background-color: rgba(11, 12, 11, 0.918);
     width: 2em;
     display: inline-block;
 }
 .toolbar .ol-control button:hover {
-    background-color: rgba(10, 106, 16, 0.802);
+    background-color: rgba(50, 48, 48, 0.789);
 }
 .layertree {
     width: 20%;
@@ -65,7 +65,7 @@ body {
     box-sizing: border-box;
     border: 1px solid grey;
     border-bottom: none;
-    background-color: rgba(10, 106, 16, 0.802);
+    background-color: rgba(246, 250, 246, 0.959);
 }
 .layertree .layertree-buttons {
     height: 2em;
@@ -108,7 +108,7 @@ body {
     margin: 0 2px 0 2px;
     border: none;
     color: rgba(255,255,255,1);
-    background-color: rgba(20, 123, 41, 0.5);
+    background-color: rgba(243, 247, 244, 0.932);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: 50%;
@@ -120,7 +120,7 @@ body {
     vertical-align: middle;
 }
 .layertree .layertree-buttons button:hover {
-    background-color: rgba(10, 106, 16, 0.802);
+    background-color: rgba(42, 46, 43, 0.802);
 }
 .layertree-buttons .addwms {
     background-image: url(../pictures/button_wms.png);

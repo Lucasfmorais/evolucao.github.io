@@ -235,6 +235,30 @@ function init() {
                 }),
                 name: 'Capitais Mundiais'
             })
+            
+            ,
+
+            new ol.layer.Vector({
+                source: new ol.source.Vector({
+                    format: new ol.format.GeoJSON({
+                        defaultDataProjection: 'EPSG:4326'
+                    }),
+                    url: './layers/bairrosjti.geojson',
+                    attributions: [
+                        new ol.Attribution({
+                            html: 'World Capitals Â© Natural Earth'
+                        })
+                    ],
+                }),
+                style: new ol.style.Style({
+                    fill: new ol.style.Fill({color: 'rgba(24, 169, 24, 0.2)'}),
+                    stroke: new ol.style.Stroke({
+                        color: 'rgba(11, 12, 11, 0.918)',
+                        width: .5,
+                    })
+                }),
+                name: 'Bairros de Jataí'
+            })
         ]
         
         ,
@@ -267,7 +291,8 @@ function init() {
 
     var tree = new layerTree({map: map, target: 'layertree', messages: 'messageBar'})
         .createRegistry(map.getLayers().item(0))
-        .createRegistry(map.getLayers().item(1));
+        .createRegistry(map.getLayers().item(1))
+        .createRegistry(map.getLayers().item(2));
 
     document.getElementById('checkwmslayer').addEventListener('click', function () {
         tree.checkWmsLayer(this.form);
