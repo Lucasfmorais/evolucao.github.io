@@ -205,9 +205,9 @@ layerTree.prototype.addWfsLayer = function (form) {
 function init() {
     document.removeEventListener('DOMContentLoaded', init);
     var container = document.getElementById('popup');
-var content = document.getElementById('popup-content');
-var closer = document.getElementById('popup-closer');
-var sketch;
+    var content = document.getElementById('TABLE');
+    var closer = document.getElementById('popup-closer');
+    var sketch;
 
 closer.onclick = function() {
     container.style.display = 'none';
@@ -573,7 +573,7 @@ var onSingleClick = function(evt) {
         popupText += '</ul>';
     }
     
-
+/* lucas */
     popupText2 = popupText
     var coord = evt.coordinate
     var viewProjection = map.getView().getProjection();
@@ -581,22 +581,32 @@ var onSingleClick = function(evt) {
     var projcorrigida = ol.proj.transform(evt.coordinate,'EPSG:3857', 'EPSG:4326')
 
     for (i = 0; i < wms_layers.length; i++) {
+         var coordinatesConv = function(a) {
+             console.log(a)
+            var coord_x = a[0].toFixed(4);
+            var coord_y = a[1].toFixed(4);
+            return "Informações do ponto: lat.:"+coord_x + ', long.:' + coord_y
+        }
         if (wms_layers[i][1]) {
             var url = wms_layers[i][0].getSource().getGetFeatureInfoUrl(
                 evt.coordinate, viewResolution, viewProjection,
                 {
-                    'INFO_FORMAT': 'text/plain',
+                    'INFO_FORMAT': 'application/vnd.ogc.gml',
+/*                     'REQUEST': 'GetFeatureInfo', */
+                    'EXCEPTIONS':'text/xml',
                 });
             if (url) {
-                popupText =  '<iframe style="width:100%;height:110px;border:0px;" id="iframe" seamless src="' + url + '"></iframe>'/* ol.proj.transform(evt.coordinate,'EPSG:3857', 'EPSG:4326') */;
+                popupText = coordinatesConv(ol.proj.transform(evt.coordinate,'EPSG:3857', 'EPSG:4326'))+'<iframe style="width:100%;height:100%;border:2px;" id="iframe" src="' + url + '"></iframe>'/*source.getGetFeatureInfoUrl(url)*/  
+            }
+            else{
+                console.log("clique vazio!")
             }
         }
     }
 
-    console.log(coord)
+
     if (popupText) {
         overlayPopup.setPosition(coord);
-
         content.innerHTML = popupText;
         container.style.display = 'block';
         console.log(popupText);        

@@ -161,7 +161,7 @@ body {
 }
 
 #popup-content>ul>li:nth-child(even) {
-    background-color: #eee;
+    background-color: rgb(179, 181, 48);
 }
 
 #popup-content ul {
@@ -186,18 +186,18 @@ body {
 .ol-popup {
     display: none;
     position: absolute;
-    background-color: white;
+    background-color: rgb(179, 181, 48);
     -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
     filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
     padding: 15px;
     border-radius: 10px;
-    border: 1px solid #cccccc;
+    border: 1px solid rgb(179, 181, 48);
     bottom: 12px;
     left: -50px;   
-    height: auto;
-    width: auto;
-    min-width: 100px;
-    max-height:400px;  
+    height: relative;
+    width: relative;
+    min-width: 300px;
+    max-height: 600px;  
     overflow: auto;      
 }

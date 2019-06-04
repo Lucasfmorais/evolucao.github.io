@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>XML Data Block Demo</title>
+<script id="purchase-order" type="application/gml">
+<purchaseOrder xmlns="http://example.mozilla.org/PurchaseOrderML">
+  <lineItem>
+    <name>Line Item 1</name>
+    <price>1.25</price>
+  </lineItem>
+  <lineItem>
+    <name>Line Item 2</name>
+    <price>2.48</price>
+  </lineItem>
+</purchaseOrder>
+</script>
+<script>
+function runDemo() {
+  var orderSource = document.getElementById("purchase-order").textContent;
+  var parser = new DOMParser();
+  var doc = parser.parseFromString(orderSource, "application/Gml");
+  var lineItems = doc.getElementsByTagNameNS("http://acervofundiario.incra.gov.br/i3geo/ogc.php?tema%3Dcertificada_sigef_particular_go&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetFeatureInfo&FORMAT=image%2Fpng&TRANSPARENT=true&QUERY_LAYERS=certificada_sigef_particular_go&LAYERS=certificada_sigef_particular_go&TILED=true&INFO_FORMAT=application%2Fvnd.ogc.gml&X=206&Y=248&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&STYLES=&BBOX=-5772524.376096511%2C-2025275.5014440306%2C-5762740.436476009%2C-2015491.561823528"", "lineItem");
+  var firstPrice = lineItems[0].getElementsByTagNameNS("http://acervofundiario.incra.gov.br/i3geo/ogc.php?tema%3Dcertificada_sigef_particular_go&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetFeatureInfo&FORMAT=image%2Fpng&TRANSPARENT=true&QUERY_LAYERS=certificada_sigef_particular_go&LAYERS=certificada_sigef_particular_go&TILED=true&INFO_FORMAT=application%2Fvnd.ogc.gml&X=206&Y=248&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&STYLES=&BBOX=-5772524.376096511%2C-2025275.5014440306%2C-5762740.436476009%2C-2015491.561823528"", "price")[0].textContent;
+  document.body.textContent = "The purchase order contains " + lineItems.length + " line items. The price of the first line item is " + firstPrice + ".";
+}
+</script>
+</head>
+<body onload="runDemo()";>
+Demo did not run
+</body>
+</html>
