@@ -138,8 +138,8 @@ layerTree.prototype.checkWmsLayer = function (form) {
     };
     url = /\?/.test(url) ? url + '&' : url + '?';
     url = url + 'REQUEST=GetCapabilities&SERVICE=WMS';
-    request.open('GET', '../py/proxy.py?' + encodeURIComponent(url), true);
-    //request.open('GET', url, true);
+/*     request.open('GET', '../py/proxy.py?' + encodeURIComponent(url), true); */
+    request.open('GET', url, true);
     request.send();
 };
 
@@ -149,13 +149,14 @@ layerTree.prototype.addWmsLayer = function (form) {
         params: {
             layers: form.layer.value,
             format: form.format.value
-        }
+        },
+        tileOptions: {crossOriginKeyword: 'anonymous'}
     };
     var layer;
     if (form.tiled.checked) {
         layer = new ol.layer.Tile({
             source: new ol.source.TileWMS(params),
-            name: form.displayname.value
+            name: form.displayname.value,
         });
     } else {
         layer = new ol.layer.Image({
@@ -189,8 +190,8 @@ layerTree.prototype.addWfsLayer = function (form) {
         }
     };
     url = url + 'SERVICE=WFS&REQUEST=GetFeature&TYPENAME=' + typeName + '&VERSION=1.1.0&SRSNAME=' + proj;
-    request.open('GET', '../../../cgi-bin/proxy.py?' + encodeURIComponent(url));
-    //request.open('GET', url);
+/*     request.open('GET', '../../../cgi-bin/proxy.py?' + encodeURIComponent(url)); */
+    request.open('GET', url);
     request.send();
     var layer = new ol.layer.Vector({
         source: source,
@@ -235,8 +236,6 @@ closer.onclick = function() {
         opacity: 1.000000,
         name: 'Imoveis',
     })
-
-
 
 
     var map = new ol.Map({

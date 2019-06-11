@@ -1,6 +1,6 @@
 body {
     margin: 0px;
-    background-color: rgba(244, 245, 244, 0.938);
+    background-color: rgba(46, 47, 46, 0.687);
 }
 .map-container {
     width: 100%;
@@ -66,7 +66,7 @@ body {
     box-sizing: border-box;
     border: 1px solid grey;
     border-bottom: none;
-    background-color: rgba(246, 250, 246, 0.959);
+    background-color: rgba(46, 47, 46, 0.687);
 }
 .layertree .layertree-buttons {
     height: 2em;
@@ -159,7 +159,7 @@ body {
 .error {
 	border-color: red;
 }
-
+/* lucas */
 #popup-content>ul>li:nth-child(even) {
     background-color: rgb(179, 181, 48);
 }
