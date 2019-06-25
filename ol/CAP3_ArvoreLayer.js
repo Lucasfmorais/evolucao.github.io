@@ -136,15 +136,9 @@ layerTree.prototype.checkWmsLayer = function(form) {
     };
     url = /\?/.test(url) ? url + '&' : url + '?';
     url = url + 'REQUEST=GetCapabilities&SERVICE=WMS';
-<<<<<<< HEAD
     //request.open('GET', './server8.py?' + encodeURIComponent(url), true);
     //http://127.0.0.1:5000/
     request.open('GET', 'http://127.0.0.1:5000/' + encodeURIComponent(url), true);
-=======
-/*     request.open('GET', '../py/proxy.py?' + encodeURIComponent(url), true); */
-    request.open('GET', 'https://lucasfmorais.github.io/evolucao.github.io/' + encodeURIComponent(url), true);
-    //https://lucasfmorais.github.io/evolucao.github.io/'
->>>>>>> d7af31d08fb9f04f9fcd9f71398f37d439c8f422
     //request.open('GET', url, true);
     request.send();
 };
