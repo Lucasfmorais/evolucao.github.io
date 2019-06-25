@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
     <title>Capítulo 3 - Criando uma árvore de camadas</title>
     <link href="./css/ol.css" rel="stylesheet">
     <link href="./css/CAP3_ArvoreLayer.css" rel="stylesheet">
@@ -30,12 +29,12 @@
     <div id="addwms" class="toggleable" style="display: none;">
         <form id="addwms_form" class="addlayer">
             <p>
-                <center>Adiconar camada WM2S</center>
+                <center>Adiconar camada WMS</center>
             </p>
             <table>
                 <tr>
                     <td>Server URL:</td>
-                    <td><input id="wmsurl" name="server" type="text" required="required" value="http://demo.opengeo.org/geoserver/wms"></td>
+                    <td><input id="wmsurl" name="server" type="text" required="required" value="https://sistemas.florestal.gov.br/geoserver/ows?version%3D2.0.0"></td>
                     <td><input id="checkwmslayer" name="check" type="button" value="Verificar camada"></td>
                 </tr>
                 <tr>
@@ -44,7 +43,7 @@
                 </tr>
                 <tr>
                     <td>Display name:</td>
-                    <td><input name="displayname" type="text"></td>
+                    <td><input name="displayname" type="text" value="SiCAR"></td>
                 </tr>
                 <tr>
                     <td>Formato:</td>

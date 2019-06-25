@@ -215,6 +215,17 @@ layerTree.prototype.addWfsLayer = function(form) {
         //request.setRequestHeader('Accept-language', 'pt-BR.pt;q=0.8,en-US;q=0.5,en;q0.3');
         //request.setRequestHeader('Authorization', 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=');
     request.send();
+
+
+
+
+
+
+
+
+
+
+
     var layer = new ol.layer.Vector({
         source: source,
         name: form.displayname.value
@@ -252,7 +263,7 @@ function init() {
             params: {
                 "LAYERS": "certificada_sigef_particular_go",
                 "TILED": "true",
-                "VERSION": "1.1.1"
+                "VERSION": "1.1.1",
             },
         })),
         opacity: 1.000000,
@@ -299,9 +310,6 @@ function init() {
                 'type': 'base',
                 'opacity': 1.00000,
                 source: new ol.source.XYZ({
-                    attributions: new ol.Attribution({
-                        html: 'Mapas de base:<a href="https://www.google.com/intl/pt_US/help/terms_maps/">Google</a>&nbsp;e &nbsp;<a href="https://www.esri.com/en-us/legal/terms/services">Esri</a>'
-                    }),
                     url: 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}'
                 }),
                 name: 'Google Earth'
@@ -309,19 +317,12 @@ function init() {
 
             ,
             sigef,
-
-
             new ol.layer.Vector({
                 source: new ol.source.Vector({
                     format: new ol.format.GeoJSON({
                         defaultDataProjection: 'EPSG:4326'
                     }),
                     url: './layers/CapitaisMundiais.geojson',
-                    attributions: [
-                        new ol.Attribution({
-                            html: 'World Capitals Â© Natural Earth'
-                        })
-                    ]
                 }),
                 name: 'Capitais Mundiais'
             })
@@ -334,11 +335,7 @@ function init() {
                         defaultDataProjection: 'EPSG:4326'
                     }),
                     url: './layers/bairrosjti.geojson',
-                    attributions: [
-                        new ol.Attribution({
-                            html: 'World Capitals Â© Natural Earth'
-                        })
-                    ],
+
                 }),
                 style: new ol.style.Style({
                     fill: new ol.style.Fill({ color: 'rgba(17, 6, 62, 0.150)' }),
@@ -628,30 +625,36 @@ function init() {
         var viewProjection = map.getView().getProjection();
         var viewResolution = map.getView().getResolution();
         var projcorrigida = ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')
-
+            //var queryLayers = sigef.getParams().LAYERS
         for (i = 0; i < wms_layers.length; i++) {
             var coordinatesConv = function(a) {
                 console.log(a)
                 var coord_x = a[0].toFixed(4);
                 var coord_y = a[1].toFixed(4);
-                return "Informações do ponto:" + "<br>" + "lat.:" + coord_x + ',' + "<br>" + 'long.:' + coord_y
+                return "Informações do ponto:" + "<br>" + "lat.:" + coord_x + "<br>" + 'long.:' + coord_y
             }
             if (wms_layers[i][1]) {
                 var url = wms_layers[i][0].getSource().getGetFeatureInfoUrl(
                     evt.coordinate, viewResolution, viewProjection, {
-                        /*                         'INFO_FORMAT': 'application/json; charset=utf-8',
-                                                'REQUEST': 'GetFeatureInfo',
+                        //'INFO_FORMAT': 'application/json',
+                        /*                        'REQUEST': 'GetFeatureInfo',
                                                 'EXCEPTIONS': 'text/plain',
                                                 'PropertyName': 'cod_imovel,flg_ativo,nom_municipio,ind_status_imovel', //retorna apenas as colunas de informações desejadas */
-                        'typeName': 'topp: states',
+                        //'typeName': 'topp: states',
                         //'INFO_FORMAT': 'text/javascript',
-                        'tileOptions': 'crossOriginKeyword: anonymous',
-                        'transitionEffect': null,
+                        //'tileOptions': 'crossOriginKeyword: anonymous',
+                        //'transitionEffect': null,
+                        'outputFormat': 'text/html,application/xhtml+xml,application/xml',
+
+                        //'crossOrigin': 'anonymous',
+
                     });
                 if (url) {
                     console.log("URL1:")
                     console.log(url)
-                    popupText = coordinatesConv(ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) + '<br>' + '<iframe style="width:100%;height:100%;border:2px;" id="iframe" src="' + url + '"></iframe>' /*source.getGetFeatureInfoUrl(url)*/
+                    popupText = coordinatesConv(ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) + '<br>' +
+                        '<iframe  style="background-color:white;" src="' + url + '"></iframe>' /*source.getGetFeatureInfoUrl(url)*/
+
                 } else {
                     console.log("clique vazio!")
                 }
