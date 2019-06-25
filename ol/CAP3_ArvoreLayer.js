@@ -653,7 +653,7 @@ function init() {
                     console.log("URL1:")
                     console.log(url)
                     popupText = coordinatesConv(ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) + '<br>' +
-                        '<iframe  style="background-color:white;" src="' + 'https://lucasfmorais.github.io/evolucao.github.io/' + url + '"></iframe>'
+                        '<iframe style="width:100%;height:100%;border:2px;" id="iframe" src="' + url + '"></iframe>'
 
                 } else {
                     console.log("clique vazio!")
