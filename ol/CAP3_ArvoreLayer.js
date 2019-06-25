@@ -139,7 +139,9 @@ layerTree.prototype.checkWmsLayer = function (form) {
     url = /\?/.test(url) ? url + '&' : url + '?';
     url = url + 'REQUEST=GetCapabilities&SERVICE=WMS';
 /*     request.open('GET', '../py/proxy.py?' + encodeURIComponent(url), true); */
-    request.open('GET', url, true);
+    request.open('GET', 'https://lucasfmorais.github.io/evolucao.github.io/' + encodeURIComponent(url), true);
+    //https://lucasfmorais.github.io/evolucao.github.io/'
+    //request.open('GET', url, true);
     request.send();
 };
 
