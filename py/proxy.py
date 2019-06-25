@@ -42,9 +42,9 @@ try:
         # print content type header
         i = y.info()
         if i.has_key("Content-Type"):
-            print "Content-Type: %s" % (i["Content-Type"])
+            print ("Content-Type: %s" % (i["Content-Type"]))
         else:
-            print "Content-Type: text/plain"
+            print ("Content-Type: text/plain")
         print
         print y.read()
         y.close()
