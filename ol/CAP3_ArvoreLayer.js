@@ -138,8 +138,8 @@ layerTree.prototype.checkWmsLayer = function(form) {
     url = url + 'REQUEST=GetCapabilities&SERVICE=WMS';
     //request.open('GET', './server8.py?' + encodeURIComponent(url), true);
     //http://127.0.0.1:5000/
-    request.open('GET', 'http://127.0.0.1:5000/' + encodeURIComponent(url), true);
-    //request.open('GET', url, true);
+    //request.open('GET', 'http://127.0.0.1:5000/' + encodeURIComponent(url), true);
+    request.open('GET', url, true);
     request.send();
 };
 
@@ -206,8 +206,8 @@ layerTree.prototype.addWfsLayer = function(form) {
     url = url + '?service=wfs&request=GetCapabilities&TYPENAME=' + typeName + '&VERSION=1.1.1&SRSNAME=' + proj;
     //?service=wms&request=GetCapabilities
     //request.open('get', './cgi-bin/proxy.py?' + encodeURIComponent(url), true);
-    //request.open('get', url, true);
-    request.open('GET', 'http://127.0.0.1:5000/' + encodeURIComponent(url), true);
+    request.open('get', url, true);
+    //request.open('GET', 'http://127.0.0.1:5000/' + encodeURIComponent(url), true);
     console.log(url)
         //request.withCredentials = true;
         //request.setRequestHeader('Accept', 'application/json, text/javascript, */*; q=0.01');
