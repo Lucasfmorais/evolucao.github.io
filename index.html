@@ -25,7 +25,7 @@
             var xmlDoc = xml.responseXML;
             var counter = 0;
             var meuTexto = "";
-            console.log("cont:", counter, "texto:", meuTexto, "xmldoc:", xmlDoc.getElementsByTagName('wb:country').length)
+            //console.log("cont:", counter, "texto:", meuTexto, "xmldoc:", xmlDoc.getElementsByTagName('wb:country').length)
             console.log(xmlDoc.getElementsByTagName('*'))
             while (counter < xmlDoc.getElementsByTagName('wb:country').length) {
                 meuTexto += "<br>" + xmlDoc.getElementsByTagName("wb:country")[counter].childNodes[0].nodeValue;
