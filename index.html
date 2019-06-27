@@ -10,8 +10,8 @@
 <body>
     <p id="demo"></p>
     <script>
-        var url = "http://api.worldbank.org/v2/country/all/indicator/SP.POP.TOTL?date=2015:2015&page=4";
-        //var url = "proxy.php?a=pjam";
+        //var url = "http://api.worldbank.org/v2/country/all/indicator/SP.POP.TOTL?date=2015:2015&page=4";
+        var url = "proxy.php?a=pjam";
         var request_http = new XMLHttpRequest();
         request_http.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
