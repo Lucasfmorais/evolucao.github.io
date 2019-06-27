@@ -11,7 +11,7 @@
     <p id="demo"></p>
     <script>
         //var url = "http://api.worldbank.org/v2/country/all/indicator/SP.POP.TOTL?date=2015:2015&page=4";
-        var url = "proxy.php?a=pjmi";
+        var url = "proxy.php?a=pjm";
         var request_http = new XMLHttpRequest();
         request_http.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
@@ -25,12 +25,12 @@
             var xmlDoc = xml.responseXML;
             var counter = 0;
             var meuTexto = "";
-            //console.log("cont:", counter, "texto:", meuTexto, "xmldoc:", xmlDoc.getElementsByTagName('wb:country').length)
-            //console.log(xmlDoc.getElementsByTagName('*'))
+            console.log("cont:", counter, "texto:", meuTexto, "xmldoc:", xmlDoc.getElementsByTagName('wb:country').length)
+            console.log(xmlDoc.getElementsByTagName('*'))
             while (counter < xmlDoc.getElementsByTagName('wb:country').length) {
                 meuTexto += "<br>" + xmlDoc.getElementsByTagName("wb:country")[counter].childNodes[0].nodeValue;
-                //console.log("result:", meuTexto)
-                //console.log("cont:", counter)
+                console.log("result:", meuTexto)
+                console.log("cont:", counter)
                 counter = counter + 1;
             }
             document.getElementById("demo").innerHTML = meuTexto
