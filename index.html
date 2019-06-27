@@ -1,54 +1,96 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Capítulo 3 - Criando uma árvore de camadas</title>
+    <link href="./css/ol.css" rel="stylesheet">
+    <link href="./css/CAP3_ArvoreLayer.css" rel="stylesheet">
+    <script type="text/javascript" src="./ol/ol.js"></script>
+    <script type="text/javascript" src="./ol/CAP3_ArvoreLayer.js"></script>
 </head>
 
 <body>
-    <p id="demo"></p>
-    <script>
-        //var url = "http://api.worldbank.org/v2/country/all/indicator/SP.POP.TOTL?date=2015:2015&page=4";
-        var url = "proxy.php?a=pjam";
-        var request_http = new XMLHttpRequest();
-        request_http.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                minhafuncao(this);
-            }
-        };
-        request_http.open("GET", url, true);
-        request_http.send();
-
-        function minhafuncao(xml) {
-            var xmlDoc = xml.responseXML;
-            var counter = 0;
-            var meuTexto = "";
-            //console.log("cont:", counter, "texto:", meuTexto, "xmldoc:", xmlDoc.getElementsByTagName('wb:country').length)
-            console.log(xmlDoc.getElementsByTagName('*'))
-            while (counter < xmlDoc.getElementsByTagName('wb:country').length) {
-                meuTexto += "<br>" + xmlDoc.getElementsByTagName("wb:country")[counter].childNodes[0].nodeValue;
-                console.log("result:", meuTexto)
-                console.log("cont:", counter)
-                counter = counter + 1;
-            }
-            document.getElementById("demo").innerHTML = meuTexto
-            //console.log("result:", meuTexto)
-        }
-        /*         function minhafuncao(url) {
-                    var xhttp = new XMLHttpRequest();
-                    xhttp.onreadystatechange = function() {
-                        if (this.readyState == 4 && this.status == 200) {
-                            document.getElementById("demo").innerHTML =
-                                this.responseText;
-                        }
-                    };
-                    xhttp.open("GET", url, true);
-                    xhttp.send();
-                } */
-    </script>
-</body>
-
-
+    <div class="map-container">
+        <div id="toolbar" class="toolbar"></div>
+        <div id="layertree" class="layertree"></div>
+        <div id="map" class="map">
+            <div id="popup" class="ol-popup">
+                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                <div id="TABLE"></div>
+            </div>
+        </div>
+        <div class="notification-bar">
+            <div id="messageBar" class="message-bar"></div>
+            <div id="coordinates"></div>
+        </div>
+    </div>
+    <div id="addwms" class="toggleable" style="display: none;">
+        <form id="addwms_form" class="addlayer">
+            <p>
+                <center>Adiconar camada WMS</center>
+            </p>
+            <table>
+                <tr>
+                    <td>Server URL:</td>
+                    <td><input id="wmsurl" name="server" type="text" required="required" value="https://sistemas.florestal.gov.br/geoserver/ows?version%3D2.0.0"></td>
+                    <td><input id="checkwmslayer" name="check" type="button" value="Verificar camada"></td>
+                </tr>
+                <tr>
+                    <td>Nome da camada:</td>
+                    <td><select name="layer" required="required"></select></td>
+                </tr>
+                <tr>
+                    <td>Display name:</td>
+                    <td><input name="displayname" type="text" value="SiCAR"></td>
+                </tr>
+                <tr>
+                    <td>Formato:</td>
+                    <td><select name="format" required="required"></select></td>
+                </tr>
+                <tr>
+                    <td>Telha:</td>
+                    <td><input type="checkbox" name="tiled"></td>
+                </tr>
+                <tr>
+                    <td><input type="submit" value="Adicionar camada"></td>
+                    <td><input type="button" value="Cancelar" onclick="this.form.parentNode.style.display = 'none'"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div id="addwfs" class="toggleable" style="display: none;">
+        <form id="addwfs_form" class="addlayer">
+            <p>
+                <center>Adiconar camada WFS.</center>
+            </p>
+            <table>
+                <tr>
+                    <td>Server URL:</td>
+                    <td><input name="server" type="text" required="required" value="http://acervofundiario.incra.gov.br/i3geo/ogc.php?tema%3Dimoveiscertificados_privado_GO"></td>
+                </tr>
+                <tr>
+                    <td>Nome da Camada:</td>
+                    <td><input name="layer" type="text" required="required" value="imoveiscertificados_privado_GO"></td>
+                </tr>
+                <tr>
+                    <td>Nome para referência:</td>
+                    <td><input name="displayname" type="text"></td>
+                </tr>
+                <tr>
+                    <td>Projeção:</td>
+                    <td><select name="projection" type="multiple" style="width: 15px">
+                            <option value="EPSG:4326">WGS 84</option>
+                            <option value="EPSG:4988">SIRGAS 2000</option>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="submit" value="Adicionar camada"></td>
+                        <td><input type="button" value="Cancelar" onclick="this.form.parentNode.style.display = 'none'"></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </body>
 </html>

@@ -134,14 +134,39 @@ layerTree.prototype.checkWmsLayer = function(form) {
             form.check.disabled = false;
         }
     };
-    url = /\?/.test(url) ? url + '&' : url + '?';
-    url = url + 'REQUEST=GetCapabilities&SERVICE=WMS';
+    //url = /\?/.test(url) ? url + '&' : url + '?';
+    //url = url + 'REQUEST=GetCapabilities&SERVICE=WMS';
     //request.open('GET', './server8.py?' + encodeURIComponent(url), true);
     //http://127.0.0.1:5000/
-    //request.open('GET', 'http://127.0.0.1:5000/' + encodeURIComponent(url), true);
+    //request.open('GET', encodeURIComponent(url), true);
+    //request.open('GET', 'https://crossorigin.me/' + url, true);
+    //request.setRequestHeader("Access-Control-Allow-Origin", "");
+    //request.setRequestHeader("Access-Control-Allow-Headers", "GET, PUT, DELET, OPTIONS");
+    //request.setRequestHeader("access-control-allow-credentials", true);
+    url = "proxy.php?a=pjm"
     request.open('GET', url, true);
+    //console.log("resquest:", request);
+    //request.onload = function() {
+    //var status = request.status;
+    //var data = request.responseText;
+    //console.log("data:", data);
     request.send();
-};
+    layerTree.tileOptions.crossOriginKeyword = null;
+}
+
+//request.setRequestHeader('Content-Type', 'application/json');
+//request.setRequestHeader('Access-Control-Allow-Methods', ' GET, PUT, DELET, OPTIONS');
+//request.withCredentials = true
+
+/*     request.onerror = function(XMLHttpRequest, textStatus, errorThrown) {
+        console.log('The data failed to load :(');
+        console.log(JSON.stringify(XMLHttpRequest));
+    };
+    request.onload = function() {
+        console.log('SUCCESS!');
+    } 
+request.send();
+};*/
 
 layerTree.prototype.addWmsLayer = function(form) {
     var params = {
@@ -182,8 +207,8 @@ layerTree.prototype.addWfsLayer = function(form) {
         url: url2,
         attributions: '<a href=""></a>',
         params: {
-            "LAYERS": typeName,
-            //"TILED": "true",
+            //"LAYERS": typeName,
+            "TILED": "true",
             "VERSION": "1.1.1"
         },
 
@@ -201,19 +226,22 @@ layerTree.prototype.addWfsLayer = function(form) {
             }));
         }
     };
+    parser.tileOptions.crossOriginKeyword = null;
     //console.log(url)
     //headers.append()
-    url = url + '?service=wfs&request=GetCapabilities&TYPENAME=' + typeName + '&VERSION=1.1.1&SRSNAME=' + proj;
+    url = url + '?service=wfs&request=GetCapabilities&TYPENAME=' + typeName + '&SRSNAME=' + proj;
     //?service=wms&request=GetCapabilities
     //request.open('get', './cgi-bin/proxy.py?' + encodeURIComponent(url), true);
     request.open('get', url, true);
     //request.open('GET', 'http://127.0.0.1:5000/' + encodeURIComponent(url), true);
     console.log(url)
         //request.withCredentials = true;
-        //request.setRequestHeader('Accept', 'application/json, text/javascript, */*; q=0.01');
-        //request.setRequestHeader('Accept-Encoding', 'gzip, deflate, br');
-        //request.setRequestHeader('Accept-language', 'pt-BR.pt;q=0.8,en-US;q=0.5,en;q0.3');
-        //request.setRequestHeader('Authorization', 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=');
+    request.setHeader('Access-Control-Allow-Origin', '*');
+    request.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    request.setHeader('Access-Control-Allow-Methods', 'POST, GET, PUT, DELET, OPTIONS');
+    //request.setHeader('Accept-Encoding', 'gzip, deflate, br');
+    //request.setHeader('Accept-language', 'pt-BR.pt;q=0.8,en-US;q=0.5,en;q0.3');
+    //request.setRequestHeader('Authorization', 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=');
     request.send();
 
 
@@ -644,7 +672,7 @@ function init() {
                         //'INFO_FORMAT': 'text/javascript',
                         //'tileOptions': 'crossOriginKeyword: anonymous',
                         //'transitionEffect': null,
-                        'outputFormat': 'text/html,application/xhtml+xml,application/xml',
+                        'outputFormat': 'text/javascript;charset=UTF-8',
 
                         //'crossOrigin': 'anonymous',
 
@@ -653,7 +681,7 @@ function init() {
                     console.log("URL1:")
                     console.log(url)
                     popupText = coordinatesConv(ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) + '<br>' +
-                        '<iframe style="width:100%;height:100%;border:2px;" id="iframe" src="' + url + '"></iframe>'
+                        '<iframe style="background-color:white;" charset="utf-8" src="' + url + '"></iframe>' /*source.getGetFeatureInfoUrl(url)*/
 
                 } else {
                     console.log("clique vazio!")
