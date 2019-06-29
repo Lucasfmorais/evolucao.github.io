@@ -134,8 +134,8 @@ layerTree.prototype.checkWmsLayer = function(form) {
             form.check.disabled = false;
         }
     };
-    //url = /\?/.test(url) ? url + '&' : url + '?';
-    //url = url + 'REQUEST=GetCapabilities&SERVICE=WMS';
+    url = /\?/.test(url) ? url + '&' : url + '?';
+    url = url + 'REQUEST=GetCapabilities&SERVICE=WMS';
     //request.open('GET', './server8.py?' + encodeURIComponent(url), true);
     //http://127.0.0.1:5000/
     //request.open('GET', encodeURIComponent(url), true);
@@ -143,7 +143,7 @@ layerTree.prototype.checkWmsLayer = function(form) {
     //request.setRequestHeader("Access-Control-Allow-Origin", "");
     //request.setRequestHeader("Access-Control-Allow-Headers", "GET, PUT, DELET, OPTIONS");
     //request.setRequestHeader("access-control-allow-credentials", true);
-    url = "proxy.php?a=pjm"
+    //url = "proxy.php?a=pjm"
     request.open('GET', url, true);
     //console.log("resquest:", request);
     //request.onload = function() {
@@ -151,7 +151,6 @@ layerTree.prototype.checkWmsLayer = function(form) {
     //var data = request.responseText;
     //console.log("data:", data);
     request.send();
-    layerTree.tileOptions.crossOriginKeyword = null;
 }
 
 //request.setRequestHeader('Content-Type', 'application/json');
@@ -284,46 +283,46 @@ function init() {
 
 
 
-    var sigef = new ol.layer.Tile({
-        source: new ol.source.TileWMS(({
-            url: "http://acervofundiario.incra.gov.br/i3geo/ogc.php?tema%3Dcertificada_sigef_particular_go",
-            attributions: '<a href=""></a>',
-            params: {
-                "LAYERS": "certificada_sigef_particular_go",
-                "TILED": "true",
-                "VERSION": "1.1.1",
-            },
-        })),
-        opacity: 1.000000,
-        name: 'Imoveis',
-    })
-
-    /*     var sigef = new ol.layer.Tile({
-                source: new ol.source.TileWMS(({
-                    url: "https://sistemas.florestal.gov.br/geoserver/ows?version%3D2.0.0",
-                    attributions: '<a href=""></a>',
-                    params: {
-                        "LAYERS": "CNFP_orig:imoveis",
-                        "TILED": "true",
-                        "VERSION": "1.3.0"
-                    },
-                })),
-                opacity: 1.000000,
-                title: "Imoveis Rurais",
-            }) */
     /*     var sigef = new ol.layer.Tile({
             source: new ol.source.TileWMS(({
-                url: "http://sistemas.florestal.gov.br:80/geoserver/CNFP_orig/wms?service=WMS",
+                url: "http://acervofundiario.incra.gov.br/i3geo/ogc.php?tema%3Dimoveiscertificados_privado_GO",
                 attributions: '<a href=""></a>',
                 params: {
-                    "LAYERS": "sfb_car:CNFP_orig:imovel_embargado4780",
+                    "LAYERS": "imoveiscertificados_privado_GO",
                     "TILED": "true",
-                    "VERSION": "1.1.0"
+                    "VERSION": "1.1.1",
                 },
             })),
             opacity: 1.000000,
             name: 'Imoveis',
         }) */
+
+    var sigef = new ol.layer.Tile({
+            source: new ol.source.TileWMS(({
+                url: "https://sistemas.florestal.gov.br/geoserver/ows?version%3D2.0.0",
+                attributions: '<a href=""></a>',
+                params: {
+                    "LAYERS": "CNFP_orig:imoveis",
+                    "TILED": "true",
+                    "VERSION": "1.3.0"
+                },
+            })),
+            opacity: 1.000000,
+            title: "Imoveis Rurais",
+        })
+        /*     var sigef = new ol.layer.Tile({
+                source: new ol.source.TileWMS(({
+                    url: "http://sistemas.florestal.gov.br:80/geoserver/CNFP_orig/wms?service=WMS",
+                    attributions: '<a href=""></a>',
+                    params: {
+                        "LAYERS": "sfb_car:CNFP_orig:imovel_embargado4780",
+                        "TILED": "true",
+                        "VERSION": "1.1.0"
+                    },
+                })),
+                opacity: 1.000000,
+                name: 'Imoveis',
+            }) */
 
 
 
@@ -648,6 +647,49 @@ function init() {
         }
 
         /* lucas */
+        var arrumatexto = function(dado) {
+            texto1 = dado.split("\n")
+            cont = 0
+            cont2 = 0
+            texto2 = []
+            temp2 = []
+            temp_html = '<html>' + coordinatesConv(ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) + '<br>' + "<table border='2' bordercolor='grey' bgcolor='White'>" + "\n"
+            while (cont < texto1.length) {
+                temp = texto1[cont].split("=");
+                if (temp.length > 1) {
+                    while (cont2 < temp.length) {
+                        temp[cont2] = temp[cont2].replace(/'/g, '')
+                        temp[cont2] = temp[cont2].trim()
+                        temp2.push(temp[cont2])
+                        if (cont2 == temp.length - 1) {
+                            temp_html = temp_html + "<td>" + temp[cont2] + "</td></tr>" + "\n"
+                        } else if (cont2 == 0) {
+                            temp_html = temp_html + "<tr><td>" + temp[cont2] + "</td>"
+                        } else {
+                            temp_html = temp_html + "<td>" + temp[cont2] + "</td>"
+                        }
+                        cont2 = cont2 + 1;;
+                    }
+                    texto2.push(temp2)
+                    temp2 = []
+                    cont2 = 0;
+                    temp = [];
+                } else {
+                    temp[0] = temp[0].replace(/'/g, '')
+                    temp[0] = temp[0].replace(":", '')
+                    temp[0] = temp[0].trim()
+                    if (temp[cont2] != "") {
+                        texto2.push(temp[0])
+                    }
+                }
+                if (cont == texto1.length - 1) {
+                    temp_html = temp_html + "</table>" + "\n" + "</html>"
+                }
+                cont = cont + 1;
+            }
+            return (temp_html)
+        }
+
         popupText2 = popupText
         var coord = evt.coordinate
         var viewProjection = map.getView().getProjection();
@@ -680,8 +722,48 @@ function init() {
                 if (url) {
                     console.log("URL1:")
                     console.log(url)
-                    popupText = coordinatesConv(ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) + '<br>' +
-                        '<iframe style="background-color:white;" charset="utf-8" src="' + url + '"></iframe>' /*source.getGetFeatureInfoUrl(url)*/
+                    var request_http = new XMLHttpRequest();
+                    var body = 'Arun';
+
+                    request_http.withCredentials = true;
+                    request_http.open("GET", url, true);
+                    request_http.setRequestHeader('X-PINGOTHER', 'pingpong');
+                    request_http.setRequestHeader('Content-Type', 'text/plain');
+                    //request_http.onreadystatechange = handler;
+                    request_http.onload = function() {
+                        if (request_http.readyState === 4) {
+                            if (request_http.status === 200) {
+                                console.log(arrumatexto(request_http.response));
+                                popupText = arrumatexto(request_http.response)
+                                if (popupText) {
+                                    overlayPopup.setPosition(coord);
+                                    content.innerHTML = popupText;
+                                    container.style.display = 'block';
+                                } else {
+                                    container.style.display = 'none';
+                                    closer.blur();
+                                }
+                            } else {
+                                popupText = arrumatexto(request_http.response)
+                                if (popupText) {
+                                    overlayPopup.setPosition(coord);
+                                    content.innerHTML = popupText;
+                                    container.style.display = 'block';
+                                } else {
+                                    container.style.display = 'none';
+                                    closer.blur();
+                                }
+                            }
+                        }
+                    }
+                    request_http.onerror = function(e) {
+                        console.error(request_http.status);
+                    };
+                    request_http.send(body);
+                    console.log
+                        //dados = request_http.onreadystatechange()
+                    console.log("aqui", dados)
+                    popupText = '<html>' + coordinatesConv(ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) + '<br>' + '</html>'
 
                 } else {
                     console.log("clique vazio!")
