@@ -95,6 +95,7 @@ layerTree.prototype.createOption = function(optionValue) {
 layerTree.prototype.checkWmsLayer = function(form) {
     form.check.disabled = true;
     var _this = this;
+
     this.removeContent(form.layer).removeContent(form.format);
     var url = form.server.value;
     url = /^((http)|(https))(:\/\/)/.test(url) ? url : 'http://' + url;
@@ -104,10 +105,11 @@ layerTree.prototype.checkWmsLayer = function(form) {
         if (request.readyState === 4 && request.status === 200) {
             var parser = new ol.format.WMSCapabilities();
             try {
-                var capabilities = parser.read(request.responseText);
+                var capabilities = parser.read(request.response);
                 var currentProj = _this.map.getView().getProjection().getCode();
                 var crs;
                 var messageText = 'Camadas lidas com sucesso.';
+
                 if (capabilities.version === '1.3.0') {
                     crs = capabilities.Capability.Layer.CRS;
                 } else {
@@ -122,8 +124,10 @@ layerTree.prototype.checkWmsLayer = function(form) {
                     var formats = capabilities.Capability.Request.GetMap.Format;
                     for (i = 0; i < formats.length; i += 1) {
                         form.format.appendChild(_this.createOption(formats[i]));
+
                     }
                     _this.messages.textContent = messageText;
+                    this.removeContent(form.layer).removeContent(form.format);
                 }
             } catch (error) {
                 _this.messages.textContent = 'Erro inesperado: (' + error.message + ').';
@@ -281,50 +285,47 @@ function init() {
         element: container
     });
 
-
-
-    /*     var sigef = new ol.layer.Tile({
-            source: new ol.source.TileWMS(({
-                url: "http://acervofundiario.incra.gov.br/i3geo/ogc.php?tema%3Dimoveiscertificados_privado_GO",
-                attributions: '<a href=""></a>',
-                params: {
-                    "LAYERS": "imoveiscertificados_privado_GO",
-                    "TILED": "true",
-                    "VERSION": "1.1.1",
-                },
-            })),
-            opacity: 1.000000,
-            name: 'Imoveis',
-        }) */
-
     var sigef = new ol.layer.Tile({
-            source: new ol.source.TileWMS(({
-                url: "https://sistemas.florestal.gov.br/geoserver/ows?version%3D2.0.0",
-                attributions: '<a href=""></a>',
-                params: {
-                    "LAYERS": "CNFP_orig:imoveis",
-                    "TILED": "true",
-                    "VERSION": "1.3.0"
-                },
-            })),
-            opacity: 1.000000,
-            title: "Imoveis Rurais",
-        })
-        /*     var sigef = new ol.layer.Tile({
-                source: new ol.source.TileWMS(({
-                    url: "http://sistemas.florestal.gov.br:80/geoserver/CNFP_orig/wms?service=WMS",
-                    attributions: '<a href=""></a>',
-                    params: {
-                        "LAYERS": "sfb_car:CNFP_orig:imovel_embargado4780",
-                        "TILED": "true",
-                        "VERSION": "1.1.0"
-                    },
-                })),
-                opacity: 1.000000,
-                name: 'Imoveis',
-            }) */
+        source: new ol.source.TileWMS(({
+            url: "http://acervofundiario.incra.gov.br/i3geo/ogc.php?tema%3Dcertificada_sigef_particular_go",
+            attributions: '<a href=""></a>',
+            params: {
+                "LAYERS": "certificada_sigef_particular_go",
+                "TILED": "true",
+                "VERSION": "1.1.1",
+            },
+        })),
+        opacity: 1.000000,
+        name: 'Imoveis',
+    })
 
+    var SNCI = new ol.layer.Tile({
+        source: new ol.source.TileWMS(({
+            url: "http://acervofundiario.incra.gov.br/i3geo/ogc.php?tema%3Dimoveiscertificados_privado_GO",
+            attributions: '<a href=""></a>',
+            params: {
+                "LAYERS": "imoveiscertificados_privado_GO",
+                "TILED": "true",
+                "VERSION": "1.1.1",
+            },
+        })),
+        opacity: 1.000000,
+        name: 'Imoveis',
+    })
 
+    var SiCAR = new ol.layer.Tile({
+        source: new ol.source.TileWMS(({
+            url: "https://sistemas.florestal.gov.br/geoserver/ows",
+            attributions: '<a href=""></a>',
+            params: {
+                "LAYERS": "CNFP_orig:imoveis",
+                "TILED": "true",
+                "VERSION": "1.1.0",
+            },
+        })),
+        opacity: 1.000000,
+        name: 'Imoveis',
+    })
 
 
     var map = new ol.Map({
@@ -335,15 +336,25 @@ function init() {
             new ol.layer.Tile({
                 title: 'Google Satellite',
                 'type': 'base',
-                'opacity': 1.00000,
+                'opacity': 5.00000,
                 source: new ol.source.XYZ({
-                    url: 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}'
+                    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
                 }),
                 name: 'Google Earth'
-            })
+            }),
 
-            ,
+            //'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}'
+            //'https://storage.googleapis.com/land_test/Test_landSAt/{z}/{x}/{y}.jpg'
+            //'https://storage.googleapis.com/wgs_test/Test_wgs_qgis/{z}/{x}/{y}.jpg'
+            //'https://storage.googleapis.com/wgs_test/Test_wgs_qgis2/{z}/{x}/{y}.jpg'
+            //https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}
+
+            //SNCI,
+
             sigef,
+
+            SiCAR,
+
             new ol.layer.Vector({
                 source: new ol.source.Vector({
                     format: new ol.format.GeoJSON({
@@ -404,7 +415,7 @@ function init() {
 
 
     var wms_layers = [];
-    wms_layers.push([sigef, 1]);
+    wms_layers.push([SiCAR, 1]);
 
 
     var onPointerMove = function(evt) {
@@ -558,7 +569,6 @@ function init() {
     var doHover = false;
     var sketch;
 
-
     var onSingleClick = function(evt) {
         if (doHover) {
             return;
@@ -653,7 +663,8 @@ function init() {
             cont2 = 0
             texto2 = []
             temp2 = []
-            temp_html = '<html>' + coordinatesConv(ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) + '<br>' + "<table border='2' bordercolor='grey' bgcolor='White'>" + "\n"
+
+            temp_html = '<html>' + coordinatesConv(ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) + '<br>' + "<table border='1' bordercolor='grey' bgcolor='White'>" + "\n"
             while (cont < texto1.length) {
                 temp = texto1[cont].split("=");
                 if (temp.length > 1) {
@@ -662,11 +673,11 @@ function init() {
                         temp[cont2] = temp[cont2].trim()
                         temp2.push(temp[cont2])
                         if (cont2 == temp.length - 1) {
-                            temp_html = temp_html + "<td>" + temp[cont2] + "</td></tr>" + "\n"
+                            temp_html = temp_html + "<td>" + '&nbsp;' + temp[cont2] + "</td></tr>" + "\n"
                         } else if (cont2 == 0) {
-                            temp_html = temp_html + "<tr><td>" + temp[cont2] + "</td>"
+                            temp_html = temp_html + "<tr><td>" + '&nbsp;' + temp[cont2] + "</td>"
                         } else {
-                            temp_html = temp_html + "<td>" + temp[cont2] + "</td>"
+                            temp_html = temp_html + "<td>" + '&nbsp;' + temp[cont2] + "</td>"
                         }
                         cont2 = cont2 + 1;;
                     }
@@ -679,7 +690,8 @@ function init() {
                     temp[0] = temp[0].replace(":", '')
                     temp[0] = temp[0].trim()
                     if (temp[cont2] != "") {
-                        texto2.push(temp[0])
+                        //temp_html = temp_html + "<tr><td colspan='2'>" + temp[0] + "</td></tr>" + ""
+                        //texto2.push(temp[0])
                     }
                 }
                 if (cont == texto1.length - 1) {
@@ -687,7 +699,8 @@ function init() {
                 }
                 cont = cont + 1;
             }
-            return (temp_html)
+            return (temp_html);
+
         }
 
         popupText2 = popupText
@@ -698,10 +711,9 @@ function init() {
             //var queryLayers = sigef.getParams().LAYERS
         for (i = 0; i < wms_layers.length; i++) {
             var coordinatesConv = function(a) {
-                console.log(a)
                 var coord_x = a[0].toFixed(4);
                 var coord_y = a[1].toFixed(4);
-                return "Informações do ponto:" + "<br>" + "lat.:" + coord_x + "<br>" + 'long.:' + coord_y
+                return "Informações do ponto" + "<br>" + "<b>Latitude:</b>" + coord_x + '&nbsp;' + '&nbsp;' + '&nbsp;' + '<b>Longitude:</b>' + coord_y + "<br>"
             }
             if (wms_layers[i][1]) {
                 var url = wms_layers[i][0].getSource().getGetFeatureInfoUrl(
@@ -711,29 +723,26 @@ function init() {
                                                 'EXCEPTIONS': 'text/plain',
                                                 'PropertyName': 'cod_imovel,flg_ativo,nom_municipio,ind_status_imovel', //retorna apenas as colunas de informações desejadas */
                         //'typeName': 'topp: states',
-                        //'INFO_FORMAT': 'text/javascript',
+                        //'INFO_FORMAT': 'text/pain',
                         //'tileOptions': 'crossOriginKeyword: anonymous',
                         //'transitionEffect': null,
-                        'outputFormat': 'text/javascript;charset=UTF-8',
+                        'outputFormat': 'text/plain',
 
                         //'crossOrigin': 'anonymous',
 
                     });
                 if (url) {
-                    console.log("URL1:")
-                    console.log(url)
                     var request_http = new XMLHttpRequest();
                     var body = 'Arun';
 
                     request_http.withCredentials = true;
                     request_http.open("GET", url, true);
-                    request_http.setRequestHeader('X-PINGOTHER', 'pingpong');
-                    request_http.setRequestHeader('Content-Type', 'text/plain');
+                    //request_http.setRequestHeader('X-PINGOTHER', 'pingpong');
+                    //request_http.setRequestHeader('Content-Type', 'text/plain');
                     //request_http.onreadystatechange = handler;
                     request_http.onload = function() {
                         if (request_http.readyState === 4) {
                             if (request_http.status === 200) {
-                                console.log(arrumatexto(request_http.response));
                                 popupText = arrumatexto(request_http.response)
                                 if (popupText) {
                                     overlayPopup.setPosition(coord);
@@ -750,19 +759,16 @@ function init() {
                                     content.innerHTML = popupText;
                                     container.style.display = 'block';
                                 } else {
+                                    console.log("vaziooooo!")
                                     container.style.display = 'none';
                                     closer.blur();
                                 }
                             }
                         }
                     }
-                    request_http.onerror = function(e) {
-                        console.error(request_http.status);
-                    };
+                    request_http.onerror = function(e) {};
                     request_http.send(body);
-                    console.log
-                        //dados = request_http.onreadystatechange()
-                    console.log("aqui", dados)
+                    //dados = request_http.onreadystatechange()
                     popupText = '<html>' + coordinatesConv(ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) + '<br>' + '</html>'
 
                 } else {
@@ -771,19 +777,19 @@ function init() {
             }
         }
 
-
-        if (popupText) {
-            overlayPopup.setPosition(coord);
-            console.log("URL2:")
-            console.log(url)
-            content.innerHTML = popupText;
-            container.style.display = 'block';
-            console.log('pop:');
-            console.log(popupText);
-        } else {
-            container.style.display = 'none';
-            closer.blur();
-        }
+        /* 
+                if (popupText) {
+                    overlayPopup.setPosition(coord);
+                    console.log("URL2:")
+                    console.log(url)
+                    content.innerHTML = popupText;
+                    container.style.display = 'block';
+                    console.log('pop:');
+                    console.log(popupText);
+                } else {
+                    container.style.display = 'none';
+                    closer.blur();
+                } */
     };
 
     map.on('singleclick', function(evt) {

@@ -1,59 +1,96 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <title>Simple use of Cross-Site XMLHttpRequest (Using Access Control)</title>
-    <script type="text/javascript">
-        //<![CDATA[
-
-        var invocation = new XMLHttpRequest();
-        var url = "https://sistemas.florestal.gov.br/geoserver/ows?version%3D2.0.0&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&FORMAT=image%2Fpng&TRANSPARENT=true&QUERY_LAYERS=CNFP_orig%3Aimoveis&LAYERS=CNFP_orig%3Aimoveis&TILED=true&outputFormat=text%2Fjavascript%3Bcharset%3DUTF-8&I=180&J=152&WIDTH=256&HEIGHT=256&CRS=EPSG%3A3857&STYLES=&BBOX=-5772524.376096511%2C-2025275.5014440306%2C-5762740.436476009%2C-2015491.561823528";
-        var invocationHistoryText;
-
-        function callOtherDomain() {
-            if (invocation) {
-                invocation.open('GET', url, true);
-                invocation.onreadystatechange = handler;
-                invocation.send();
-            } else {
-                invocationHistoryText = "No Invocation TookPlace At All";
-                var textNode = document.createTextNode(invocationHistoryText);
-                var textDiv = document.getElementById("textDiv");
-                textDiv.appendChild(textNode);
-            }
-
-        }
-
-        function handler(evtXHR) {
-            if (invocation.readyState == 4) {
-                if (invocation.status == 200) {
-                    var response = invocation.responseXML;
-                    var invocationHistory = response.getElementsByTagName('invocationHistory').item(0).firstChild.data;
-                    invocationHistoryText = document.createTextNode(invocationHistory);
-                    var textDiv = document.getElementById("textDiv");
-                    textDiv.appendChild(invocationHistoryText);
-
-                } else
-                    alert("Invocation Errors Occured");
-            } else
-                dump("currently the application is at" + invocation.readyState);
-        }
-        //]]>
-    </script>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Capítulo 3 - Criando uma árvore de camadas</title>
+    <link href="./css/ol.css" rel="stylesheet">
+    <link href="./css/CAP3_ArvoreLayer.css" rel="stylesheet">
+    <script type="text/javascript" src="./ol/ol.js"></script>
+    <script type="text/javascript" src="./ol/CAP3_ArvoreLayer.js"></script>
 </head>
 
 <body>
-    <form id="controlsToInvoke" action="">
-        <p>
-            <input type="button" value="Click to Invoke Another Site" onclick="callOtherDomain()" />
-        </p>
-    </form>
-    <p id="intro">
-        This page basically makes invocations to another domain using cross-site XMLHttpRequest mitigated by Access Control. This is the simple scenario that is <em>NOT</em> preflighted, and the invocation to a resource on another domain takes place using
-        a simple HTTP GET.
-    </p>
-    <div id="textDiv">
-        This XHTML document invokes another resource using cross-site XHR.
+    <div class="map-container">
+        <div id="toolbar" class="toolbar"></div>
+        <div id="layertree" class="layertree"></div>
+        <div id="map" class="map">
+            <div id="popup" class="ol-popup">
+                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                <div id="TABLE"></div>
+            </div>
+        </div>
+        <div class="notification-bar">
+            <div id="messageBar" class="message-bar"></div>
+            <div id="coordinates"></div>
+        </div>
     </div>
-</body>
-
+    <div id="addwms" class="toggleable" style="display: none;">
+        <form id="addwms_form" class="addlayer">
+            <p>
+                <center>Adiconar camada WMS</center>
+            </p>
+            <table>
+                <tr>
+                    <td>Server URL:</td>
+                    <td><input id="wmsurl" name="server" type="text" required="required" value="https://sistemas.florestal.gov.br/geoserver/ows?version%3D2.0.0"></td>
+                    <td><input id="checkwmslayer" name="check" type="button" value="Verificar camada"></td>
+                </tr>
+                <tr>
+                    <td>Nome da camada:</td>
+                    <td><select name="layer" required="required"></select></td>
+                </tr>
+                <tr>
+                    <td>Display name:</td>
+                    <td><input name="displayname" type="text" value="SiCAR"></td>
+                </tr>
+                <tr>
+                    <td>Formato:</td>
+                    <td><select name="format" required="required"></select></td>
+                </tr>
+                <tr>
+                    <td>Telha:</td>
+                    <td><input type="checkbox" name="tiled"></td>
+                </tr>
+                <tr>
+                    <td><input type="submit" value="Adicionar camada"></td>
+                    <td><input type="button" value="Cancelar" onclick="this.form.parentNode.style.display = 'none'"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div id="addwfs" class="toggleable" style="display: none;">
+        <form id="addwfs_form" class="addlayer">
+            <p>
+                <center>Adiconar camada WFS.</center>
+            </p>
+            <table>
+                <tr>
+                    <td>Server URL:</td>
+                    <td><input name="server" type="text" required="required" value="http://acervofundiario.incra.gov.br/i3geo/ogc.php?tema%3Dimoveiscertificados_privado_GO"></td>
+                </tr>
+                <tr>
+                    <td>Nome da Camada:</td>
+                    <td><input name="layer" type="text" required="required" value="imoveiscertificados_privado_GO"></td>
+                </tr>
+                <tr>
+                    <td>Nome para referência:</td>
+                    <td><input name="displayname" type="text"></td>
+                </tr>
+                <tr>
+                    <td>Projeção:</td>
+                    <td><select name="projection" type="multiple" style="width: 15px">
+                            <option value="EPSG:4326">WGS 84</option>
+                            <option value="EPSG:4988">SIRGAS 2000</option>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="submit" value="Adicionar camada"></td>
+                        <td><input type="button" value="Cancelar" onclick="this.form.parentNode.style.display = 'none'"></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </body>
 </html>
