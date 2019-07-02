@@ -232,7 +232,7 @@ layerTree.prototype.addWfsLayer = function(form) {
     parser.tileOptions.crossOriginKeyword = null;
     //console.log(url)
     //headers.append()
-    url = url + '?service=wfs&request=GetCapabilities&TYPENAME=' + typeName + '&SRSNAME=' + proj;
+    url = "https://cors-anywhere.herokuapp.com/" + url + '?service=wfs&request=GetCapabilities&TYPENAME=' + typeName + '&SRSNAME=' + proj;
     //?service=wms&request=GetCapabilities
     //request.open('get', './cgi-bin/proxy.py?' + encodeURIComponent(url), true);
     request.open('get', url, true);
@@ -713,7 +713,7 @@ function init() {
                 return "Informações do ponto" + "<br>" + "<b>Latitude/Longitude:</b>" + '&nbsp;[' + coord_x + '&nbsp;,&nbsp;' + coord_y + "]<br>"
             }
             if (wms_layers[i][1]) {
-                var url = wms_layers[i][0].getSource().getGetFeatureInfoUrl(
+                var url = "https://cors-anywhere.herokuapp.com/" + wms_layers[i][0].getSource().getGetFeatureInfoUrl(
                     evt.coordinate, viewResolution, viewProjection, {
                         //'INFO_FORMAT': 'application/json',
                         /*                        'REQUEST': 'GetFeatureInfo',
