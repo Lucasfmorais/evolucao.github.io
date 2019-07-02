@@ -13,6 +13,8 @@ var layerTree = function(options) {
         }
         this.messages = document.getElementById(options.messages) || document.createElement('span');
         var controlDiv = document.createElement('div');
+        console.log("svisa")
+        console.log(controlDiv)
         controlDiv.className = 'layertree-buttons';
         controlDiv.appendChild(this.createButton('addwms', 'Adicionar camada WMS', 'addlayer'));
         controlDiv.appendChild(this.createButton('addwfs', 'Adicionar camada WFS', 'addlayer'));
@@ -34,6 +36,7 @@ var layerTree = function(options) {
             this.layerContainer.insertBefore(layerDiv, this.layerContainer.firstChild);
             return this;
         };
+        console.log(this)
         this.map.getLayers().on('add', function(evt) {
             if (evt.element instanceof ol.layer.Vector) {
                 this.createRegistry(evt.element, true);
@@ -127,7 +130,7 @@ layerTree.prototype.checkWmsLayer = function(form) {
 
                     }
                     _this.messages.textContent = messageText;
-                    this.removeContent(form.layer).removeContent(form.format);
+                    //this.removeContent(form.layer).removeContent(form.format);
                 }
             } catch (error) {
                 _this.messages.textContent = 'Erro inesperado: (' + error.message + ').';
@@ -149,7 +152,7 @@ layerTree.prototype.checkWmsLayer = function(form) {
     //request.setRequestHeader("access-control-allow-credentials", true);
     //url = "proxy.php?a=pjm"
     request.open('GET', url, true);
-    //console.log("resquest:", request);
+    console.log("resquest:", url);
     //request.onload = function() {
     //var status = request.status;
     //var data = request.responseText;
@@ -229,7 +232,7 @@ layerTree.prototype.addWfsLayer = function(form) {
             }));
         }
     };
-    parser.tileOptions.crossOriginKeyword = null;
+    //parser.tileOptions.crossOriginKeyword = null;
     //console.log(url)
     //headers.append()
     url = "https://cors-anywhere.herokuapp.com/" + url + '?service=wfs&request=GetCapabilities&TYPENAME=' + typeName + '&SRSNAME=' + proj;
@@ -350,7 +353,7 @@ function init() {
 
             sigef,
 
-            SiCAR,
+            //SiCAR,
 
             new ol.layer.Vector({
                 source: new ol.source.Vector({
@@ -412,7 +415,7 @@ function init() {
 
 
     var wms_layers = [];
-    wms_layers.push([SiCAR, 1]);
+    wms_layers.push([sigef, 1]);
 
 
     var onPointerMove = function(evt) {
@@ -713,12 +716,12 @@ function init() {
                 return "Informações do ponto" + "<br>" + "<b>Latitude/Longitude:</b>" + '&nbsp;[' + coord_x + '&nbsp;,&nbsp;' + coord_y + "]<br>"
             }
             if (wms_layers[i][1]) {
-                var url = "https://cors-anywhere.herokuapp.com/" + wms_layers[i][0].getSource().getGetFeatureInfoUrl(
+                var url = wms_layers[i][0].getSource().getGetFeatureInfoUrl(
                     evt.coordinate, viewResolution, viewProjection, {
                         //'INFO_FORMAT': 'application/json',
-                        /*                        'REQUEST': 'GetFeatureInfo',
-                                                'EXCEPTIONS': 'text/plain',
-                                                'PropertyName': 'cod_imovel,flg_ativo,nom_municipio,ind_status_imovel', //retorna apenas as colunas de informações desejadas */
+                        'REQUEST': 'GetFeatureInfo',
+                        /*'EXCEPTIONS': 'text/plain',
+                        'PropertyName': 'cod_imovel,flg_ativo,nom_municipio,ind_status_imovel', //retorna apenas as colunas de informações desejadas */
                         //'typeName': 'topp: states',
                         //'INFO_FORMAT': 'text/pain',
                         //'tileOptions': 'crossOriginKeyword: anonymous',
@@ -731,43 +734,35 @@ function init() {
                 if (url) {
                     var request_http = new XMLHttpRequest();
                     var body = 'Arun';
-
-                    request_http.withCredentials = true;
-                    request_http.open("GET", url, true);
-                    //request_http.setRequestHeader('X-PINGOTHER', 'pingpong');
-                    //request_http.setRequestHeader('Content-Type', 'text/plain');
-                    //request_http.onreadystatechange = handler;
-                    request_http.onload = function() {
-                        if (request_http.readyState === 4) {
-                            if (request_http.status === 200) {
-                                popupText = arrumatexto(request_http.response)
-                                if (popupText) {
-                                    overlayPopup.setPosition(coord);
-                                    content.innerHTML = popupText;
-                                    container.style.display = 'block';
-                                } else {
-                                    container.style.display = 'none';
-                                    closer.blur();
-                                }
+                    url_cors = "https://cors-anywhere.herokuapp.com/"
+                    request_http.open("GET", url_cors + url, true);
+                    request_http.onload = request_http.onerror = function() {
+                        if (request_http.readyState === 4 && request_http.status === 200) {
+                            popupText = arrumatexto(request_http.responseText)
+                            if (popupText) {
+                                overlayPopup.setPosition(coord);
+                                content.innerHTML = popupText;
+                                container.style.display = 'block';
                             } else {
-                                popupText = arrumatexto(request_http.response)
-                                if (popupText) {
-                                    overlayPopup.setPosition(coord);
-                                    content.innerHTML = popupText;
-                                    container.style.display = 'block';
-                                } else {
-                                    console.log("vaziooooo!")
-                                    container.style.display = 'none';
-                                    closer.blur();
-                                }
+                                container.style.display = 'none';
+                                closer.blur();
+                            }
+                        } else {
+                            popupText = arrumatexto(request_http.responseText)
+                            if (popupText) {
+                                overlayPopup.setPosition(coord);
+                                content.innerHTML = popupText;
+                                container.style.display = 'block';
+                            } else {
+                                container.style.display = 'none';
+                                closer.blur();
                             }
                         }
                     }
-                    request_http.onerror = function(e) {};
-                    request_http.send(body);
-                    //dados = request_http.onreadystatechange()
-                    popupText = '<html>' + coordinatesConv(ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) + '<br>' + '</html>'
 
+                    request_http.send(body);
+
+                    popupText = '<html>' + coordinatesConv(ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) + '<br>' + '</html>'
                 } else {
                     console.log("clique vazio!")
                 }
