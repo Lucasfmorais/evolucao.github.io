@@ -349,7 +349,7 @@ function init() {
             //'https://storage.googleapis.com/wgs_test/Test_wgs_qgis2/{z}/{x}/{y}.jpg'
             //https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}
 
-            //SNCI,
+            SNCI,
 
             sigef,
 
@@ -713,7 +713,7 @@ function init() {
             var coordinatesConv = function(a) {
                 var coord_x = a[0].toFixed(4);
                 var coord_y = a[1].toFixed(4);
-                return "Informações do ponto" + "<br>" + "<b>Latitude:</b>" + coord_x + '&nbsp;' + '&nbsp;' + '&nbsp;' + '<b>Longitude:</b>' + coord_y + "<br>"
+                return "Informações do ponto" + "<br>" + "<b>Latitude/Longitude:</b>" + '&nbsp;[' + coord_x + '&nbsp;,&nbsp;' + coord_y + "]<br>"
             }
             if (wms_layers[i][1]) {
                 var url = wms_layers[i][0].getSource().getGetFeatureInfoUrl(
@@ -777,19 +777,6 @@ function init() {
             }
         }
 
-        /* 
-                if (popupText) {
-                    overlayPopup.setPosition(coord);
-                    console.log("URL2:")
-                    console.log(url)
-                    content.innerHTML = popupText;
-                    container.style.display = 'block';
-                    console.log('pop:');
-                    console.log(popupText);
-                } else {
-                    container.style.display = 'none';
-                    closer.blur();
-                } */
     };
 
     map.on('singleclick', function(evt) {
