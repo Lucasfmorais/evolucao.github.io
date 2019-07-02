@@ -139,7 +139,7 @@ layerTree.prototype.checkWmsLayer = function(form) {
         }
     };
     url = /\?/.test(url) ? url + '&' : url + '?';
-    url = url + 'REQUEST=GetCapabilities&SERVICE=WMS';
+    url = "https://cors-anywhere.herokuapp.com/" + url + 'REQUEST=GetCapabilities&SERVICE=WMS';
     //request.open('GET', './server8.py?' + encodeURIComponent(url), true);
     //http://127.0.0.1:5000/
     //request.open('GET', encodeURIComponent(url), true);
@@ -239,12 +239,9 @@ layerTree.prototype.addWfsLayer = function(form) {
     //request.open('GET', 'http://127.0.0.1:5000/' + encodeURIComponent(url), true);
     console.log(url)
         //request.withCredentials = true;
-    request.setHeader('Access-Control-Allow-Origin', '*');
-    request.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    request.setHeader('Access-Control-Allow-Methods', 'POST, GET, PUT, DELET, OPTIONS');
-    //request.setHeader('Accept-Encoding', 'gzip, deflate, br');
-    //request.setHeader('Accept-language', 'pt-BR.pt;q=0.8,en-US;q=0.5,en;q0.3');
-    //request.setRequestHeader('Authorization', 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=');
+        //request.setHeader('Accept-Encoding', 'gzip, deflate, br');
+        //request.setHeader('Accept-language', 'pt-BR.pt;q=0.8,en-US;q=0.5,en;q0.3');
+        //request.setRequestHeader('Authorization', 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=');
     request.send();
 
 
