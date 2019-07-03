@@ -330,8 +330,9 @@ function init() {
             //https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}
 
             bairros,
-            SNCI,
+            //SNCI,
             sigef,
+            Capitais,
 
             //SiCAR,
 
@@ -364,6 +365,7 @@ function init() {
             zoom: 12
         })
     });
+
     // busca informações da camada geojason
     map.on('click', function(evt) {
         var feature = map.forEachFeatureAtPixel(evt.pixel, function(
@@ -372,11 +374,19 @@ function init() {
             return feature;
         });
         if (feature) {
-
-            console.info('coc', feature.get('IDENTIDADE'));
+            inf_attr = feature.getKeys()
+            i = 0
+            while (i < inf_attr.length) {
+                if (inf_attr[i] != "geometry") {
+                    //console.info(inf_attr[i])
+                    //console.info(inf_attr[i] + '= ' + feature.get(inf_attr[i]) + "\n")
+                    dado = inf_attr[i] + ':' + feature.get(inf_attr[i]) + "\n"
+                }
+                i = 1 + i
+            }
         }
+        //console.log(dado);
     });
-
 
 
     var wms_layers = [];
@@ -667,7 +677,6 @@ function init() {
 
         }
 
-        popupText2 = popupText
         var coord = evt.coordinate
         var viewProjection = map.getView().getProjection();
         var viewResolution = map.getView().getResolution();
@@ -727,6 +736,7 @@ function init() {
     map.on('singleclick', function(evt) {
         onSingleClick(evt);
     });
+
 
     var tree = new layerTree({ map: map, target: 'layertree', messages: 'messageBar' })
         .createRegistry(map.getLayers().item(0))
