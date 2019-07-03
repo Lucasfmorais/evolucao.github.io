@@ -13,8 +13,6 @@ var layerTree = function(options) {
         }
         this.messages = document.getElementById(options.messages) || document.createElement('span');
         var controlDiv = document.createElement('div');
-        console.log("svisa")
-        console.log(controlDiv)
         controlDiv.className = 'layertree-buttons';
         controlDiv.appendChild(this.createButton('addwms', 'Adicionar camada WMS', 'addlayer'));
         controlDiv.appendChild(this.createButton('addwfs', 'Adicionar camada WFS', 'addlayer'));
@@ -36,7 +34,6 @@ var layerTree = function(options) {
             this.layerContainer.insertBefore(layerDiv, this.layerContainer.firstChild);
             return this;
         };
-        console.log(this)
         this.map.getLayers().on('add', function(evt) {
             if (evt.element instanceof ol.layer.Vector) {
                 this.createRegistry(evt.element, true);
@@ -130,7 +127,7 @@ layerTree.prototype.checkWmsLayer = function(form) {
 
                     }
                     _this.messages.textContent = messageText;
-                    //this.removeContent(form.layer).removeContent(form.format);
+                    _this.form.reset()
                 }
             } catch (error) {
                 _this.messages.textContent = 'Erro inesperado: (' + error.message + ').';
@@ -141,38 +138,14 @@ layerTree.prototype.checkWmsLayer = function(form) {
             form.check.disabled = false;
         }
     };
+
     url = /\?/.test(url) ? url + '&' : url + '?';
     url = "https://cors-anywhere.herokuapp.com/" + url + 'REQUEST=GetCapabilities&SERVICE=WMS';
-    //request.open('GET', './server8.py?' + encodeURIComponent(url), true);
-    //http://127.0.0.1:5000/
-    //request.open('GET', encodeURIComponent(url), true);
-    //request.open('GET', 'https://crossorigin.me/' + url, true);
-    //request.setRequestHeader("Access-Control-Allow-Origin", "");
-    //request.setRequestHeader("Access-Control-Allow-Headers", "GET, PUT, DELET, OPTIONS");
-    //request.setRequestHeader("access-control-allow-credentials", true);
-    //url = "proxy.php?a=pjm"
     request.open('GET', url, true);
-    console.log("resquest:", url);
-    //request.onload = function() {
-    //var status = request.status;
-    //var data = request.responseText;
-    //console.log("data:", data);
     request.send();
+    //content.innerHTML = this.form.parentNode.style.display = 'none';
 }
 
-//request.setRequestHeader('Content-Type', 'application/json');
-//request.setRequestHeader('Access-Control-Allow-Methods', ' GET, PUT, DELET, OPTIONS');
-//request.withCredentials = true
-
-/*     request.onerror = function(XMLHttpRequest, textStatus, errorThrown) {
-        console.log('The data failed to load :(');
-        console.log(JSON.stringify(XMLHttpRequest));
-    };
-    request.onload = function() {
-        console.log('SUCCESS!');
-    } 
-request.send();
-};*/
 
 layerTree.prototype.addWmsLayer = function(form) {
     var params = {
@@ -223,7 +196,7 @@ layerTree.prototype.addWfsLayer = function(form) {
         strategy: ol.loadingstrategy.bbox
     });
     var request = new XMLHttpRequest();
-    request.onload = function() { console.log(this.responseText); };
+    //request.onload = function() { console.log(this.responseText); };
     request.onreadystatechange = function() {
         if (request.readyState === 4 && request.status === 200) {
             source.addFeatures(parser.readFeatures(request.responseText, {
@@ -232,30 +205,10 @@ layerTree.prototype.addWfsLayer = function(form) {
             }));
         }
     };
-    //parser.tileOptions.crossOriginKeyword = null;
-    //console.log(url)
-    //headers.append()
+
     url = "https://cors-anywhere.herokuapp.com/" + url + '?service=wfs&request=GetCapabilities&TYPENAME=' + typeName + '&SRSNAME=' + proj;
-    //?service=wms&request=GetCapabilities
-    //request.open('get', './cgi-bin/proxy.py?' + encodeURIComponent(url), true);
     request.open('get', url, true);
-    //request.open('GET', 'http://127.0.0.1:5000/' + encodeURIComponent(url), true);
-    console.log(url)
-        //request.withCredentials = true;
-        //request.setHeader('Accept-Encoding', 'gzip, deflate, br');
-        //request.setHeader('Accept-language', 'pt-BR.pt;q=0.8,en-US;q=0.5,en;q0.3');
-        //request.setRequestHeader('Authorization', 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=');
     request.send();
-
-
-
-
-
-
-
-
-
-
 
     var layer = new ol.layer.Vector({
         source: source,
@@ -296,7 +249,7 @@ function init() {
             },
         })),
         opacity: 1.000000,
-        name: 'Imoveis',
+        name: 'Sigef',
     })
 
     var SNCI = new ol.layer.Tile({
@@ -310,7 +263,7 @@ function init() {
             },
         })),
         opacity: 1.000000,
-        name: 'Imoveis',
+        name: 'SCNI',
     })
 
     var SiCAR = new ol.layer.Tile({
@@ -326,7 +279,34 @@ function init() {
         opacity: 1.000000,
         name: 'Imoveis',
     })
+    var Capitais = new ol.layer.Vector({
+        source: new ol.source.Vector({
+            format: new ol.format.GeoJSON({
+                defaultDataProjection: 'EPSG:4326'
+            }),
+            url: './layers/CapitaisMundiais.geojson',
+        }),
+        name: 'Capitais Mundiais'
+    })
 
+
+    var bairros = new ol.layer.Vector({
+        source: new ol.source.Vector({
+            format: new ol.format.GeoJSON({
+                defaultDataProjection: 'EPSG:4326'
+            }),
+            url: './layers/bairrosjti.geojson',
+
+        }),
+        style: new ol.style.Style({
+            fill: new ol.style.Fill({ color: 'rgba(17, 6, 62, 0.150)' }),
+            stroke: new ol.style.Stroke({
+                color: 'rgba(11, 12, 11, 0.918)',
+                width: .5,
+            })
+        }),
+        name: 'Bairros de Jataí'
+    })
 
     var map = new ol.Map({
         target: 'map',
@@ -349,41 +329,13 @@ function init() {
             //'https://storage.googleapis.com/wgs_test/Test_wgs_qgis2/{z}/{x}/{y}.jpg'
             //https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}
 
+            bairros,
             SNCI,
-
             sigef,
 
             //SiCAR,
 
-            new ol.layer.Vector({
-                source: new ol.source.Vector({
-                    format: new ol.format.GeoJSON({
-                        defaultDataProjection: 'EPSG:4326'
-                    }),
-                    url: './layers/CapitaisMundiais.geojson',
-                }),
-                name: 'Capitais Mundiais'
-            })
 
-            ,
-
-            new ol.layer.Vector({
-                source: new ol.source.Vector({
-                    format: new ol.format.GeoJSON({
-                        defaultDataProjection: 'EPSG:4326'
-                    }),
-                    url: './layers/bairrosjti.geojson',
-
-                }),
-                style: new ol.style.Style({
-                    fill: new ol.style.Fill({ color: 'rgba(17, 6, 62, 0.150)' }),
-                    stroke: new ol.style.Stroke({
-                        color: 'rgba(11, 12, 11, 0.918)',
-                        width: .5,
-                    })
-                }),
-                name: 'Bairros de Jataí'
-            })
         ]
 
         ,
@@ -412,6 +364,19 @@ function init() {
             zoom: 12
         })
     });
+    // busca informações da camada geojason
+    map.on('click', function(evt) {
+        var feature = map.forEachFeatureAtPixel(evt.pixel, function(
+            feature,
+        ) {
+            return feature;
+        });
+        if (feature) {
+
+            console.info('coc', feature.get('IDENTIDADE'));
+        }
+    });
+
 
 
     var wms_layers = [];
@@ -690,8 +655,7 @@ function init() {
                     temp[0] = temp[0].replace(":", '')
                     temp[0] = temp[0].trim()
                     if (temp[cont2] != "") {
-                        //temp_html = temp_html + "<tr><td colspan='2'>" + temp[0] + "</td></tr>" + ""
-                        //texto2.push(temp[0])
+                        console.log("!!!")
                     }
                 }
                 if (cont == texto1.length - 1) {
@@ -708,7 +672,6 @@ function init() {
         var viewProjection = map.getView().getProjection();
         var viewResolution = map.getView().getResolution();
         var projcorrigida = ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')
-            //var queryLayers = sigef.getParams().LAYERS
         for (i = 0; i < wms_layers.length; i++) {
             var coordinatesConv = function(a) {
                 var coord_x = a[0].toFixed(4);
@@ -718,18 +681,8 @@ function init() {
             if (wms_layers[i][1]) {
                 var url = wms_layers[i][0].getSource().getGetFeatureInfoUrl(
                     evt.coordinate, viewResolution, viewProjection, {
-                        //'INFO_FORMAT': 'application/json',
                         'REQUEST': 'GetFeatureInfo',
-                        /*'EXCEPTIONS': 'text/plain',
-                        'PropertyName': 'cod_imovel,flg_ativo,nom_municipio,ind_status_imovel', //retorna apenas as colunas de informações desejadas */
-                        //'typeName': 'topp: states',
-                        //'INFO_FORMAT': 'text/pain',
-                        //'tileOptions': 'crossOriginKeyword: anonymous',
-                        //'transitionEffect': null,
                         'outputFormat': 'text/plain',
-
-                        //'crossOrigin': 'anonymous',
-
                     });
                 if (url) {
                     var request_http = new XMLHttpRequest();
@@ -778,7 +731,8 @@ function init() {
     var tree = new layerTree({ map: map, target: 'layertree', messages: 'messageBar' })
         .createRegistry(map.getLayers().item(0))
         .createRegistry(map.getLayers().item(1))
-        .createRegistry(map.getLayers().item(2));
+        .createRegistry(map.getLayers().item(2))
+        .createRegistry(map.getLayers().item(3));
 
     document.getElementById('checkwmslayer').addEventListener('click', function() {
         tree.checkWmsLayer(this.form);
