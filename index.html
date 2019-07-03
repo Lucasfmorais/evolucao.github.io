@@ -92,5 +92,40 @@
                 </table>
             </form>
         </div>
-    </body>
+        <div id="addtms" class="toggleable" style="display: none;">
+            <form id="addtms_form" class="addlayer">
+                <p>
+                    <center>Adiconar camada WMS</center>
+                </p>
+                <table>
+                    <tr>
+                        <td>Server URL:</td>
+                        <td><input id="tmsurl" name="server" type="text" required="required" value="https://sistemas.florestal.gov.br/geoserver/ows?version%3D2.0.0"></td>
+                        <td><input id="checktmslayer" name="check" type="button" value="Verificar camada"></td>
+                    </tr>
+                    <tr>
+                        <td>Nome da camada:</td>
+                        <td><select name="layer" required="required"></select></td>
+                </tr>
+                <tr>
+                    <td>Display name:</td>
+                    <td><input name="displayname" type="text" value="SiCAR"></td>
+                </tr>
+                <tr>
+                    <td>Formato:</td>
+                    <td><select name="format" required="required"></select></td>
+                </tr>
+                <tr>
+                    <td>Telha:</td>
+                    <td><input type="checkbox" name="tiled"></td>
+                </tr>
+                <tr>
+                    <td><input type="submit" value="Adicionar camada"></td>
+                    <td><input type="button" value="Cancelar" onclick="this.form.parentNode.style.display = 'none'"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</body>
+
 </html>

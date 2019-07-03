@@ -16,6 +16,7 @@ var layerTree = function(options) {
         controlDiv.className = 'layertree-buttons';
         controlDiv.appendChild(this.createButton('addwms', 'Adicionar camada WMS', 'addlayer'));
         controlDiv.appendChild(this.createButton('addwfs', 'Adicionar camada WFS', 'addlayer'));
+        controlDiv.appendChild(this.createButton('addtms', 'Adicionar camada TMS', 'addlayer'));
         containerDiv.appendChild(controlDiv);
         this.layerContainer = document.createElement('div');
         this.layerContainer.className = 'layercontainer';
@@ -30,6 +31,7 @@ var layerTree = function(options) {
             layerDiv.id = layer.get('id');
             var layerSpan = document.createElement('span');
             layerSpan.textContent = layerDiv.title;
+
             layerDiv.appendChild(layerSpan);
             this.layerContainer.insertBefore(layerDiv, this.layerContainer.firstChild);
             return this;
@@ -38,7 +40,7 @@ var layerTree = function(options) {
             if (evt.element instanceof ol.layer.Vector) {
                 this.createRegistry(evt.element, true);
             } else {
-                this.createRegistry(evt.element);
+                //this.createRegistry(evt.element);
             }
         }, this);
     } else {
@@ -100,6 +102,7 @@ layerTree.prototype.checkWmsLayer = function(form) {
     var url = form.server.value;
     url = /^((http)|(https))(:\/\/)/.test(url) ? url : 'http://' + url;
     form.server.value = url;
+
     var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
         if (request.readyState === 4 && request.status === 200) {
@@ -108,6 +111,7 @@ layerTree.prototype.checkWmsLayer = function(form) {
                 var capabilities = parser.read(request.response);
                 var currentProj = _this.map.getView().getProjection().getCode();
                 var crs;
+
                 var messageText = 'Camadas lidas com sucesso.';
 
                 if (capabilities.version === '1.3.0') {
@@ -117,9 +121,20 @@ layerTree.prototype.checkWmsLayer = function(form) {
                     messageText += ' Aviso! A compatibilidade de projeção não pôde ser verificada devido à incompatibilidade de versão (' + capabilities.version + ').';
                 }
                 var layers = capabilities.Capability.Layer.Layer;
+
+                console.log("opaa", layers)
                 if (layers.length > 0 && crs.indexOf(currentProj) > -1) {
                     for (var i = 0; i < layers.length; i += 1) {
                         form.layer.appendChild(_this.createOption(layers[i].Name));
+                        //console.log(layers[i].Name)
+                        temp = layers[i].Name.split(":")
+                            /*                         console.log(temp)
+                                                    if (temp.length > 1) {
+                                                        form.layer.appendChild(_this.createOption(temp[1]))
+                                                    } else {
+                                                        form.layer.appendChild(_this.createOption(layers[i].Name))
+                                                    } */
+
                     }
                     var formats = capabilities.Capability.Request.GetMap.Format;
                     for (i = 0; i < formats.length; i += 1) {
@@ -140,6 +155,7 @@ layerTree.prototype.checkWmsLayer = function(form) {
     };
 
     url = /\?/.test(url) ? url + '&' : url + '?';
+    console.log("coco:", url)
     url = "https://cors-anywhere.herokuapp.com/" + url + 'REQUEST=GetCapabilities&SERVICE=WMS';
     request.open('GET', url, true);
     request.send();
@@ -322,25 +338,17 @@ function init() {
                 }),
                 name: 'Google Earth'
             }),
-
             //'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}'
             //'https://storage.googleapis.com/land_test/Test_landSAt/{z}/{x}/{y}.jpg'
             //'https://storage.googleapis.com/wgs_test/Test_wgs_qgis/{z}/{x}/{y}.jpg'
             //'https://storage.googleapis.com/wgs_test/Test_wgs_qgis2/{z}/{x}/{y}.jpg'
             //https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}
-
             bairros,
             //SNCI,
-            sigef,
-            Capitais,
-
+            //sigef,
+            //Capitais,
             //SiCAR,
-
-
-        ]
-
-        ,
-
+        ],
         controls: [
             //Define the default controls
             new ol.control.Zoom({
@@ -356,18 +364,70 @@ function init() {
                 },
                 target: 'coordinates'
             })
-        ]
-
-        ,
-
+        ],
         view: new ol.View({
             center: ol.proj.fromLonLat([-51.7257015, -17.8869303]),
             zoom: 12
         })
     });
 
-    // busca informações da camada geojason
-    map.on('click', function(evt) {
+    var wms_layers = [];
+    wms_layers.push([SNCI, 1], [sigef, 1]);
+    console.log(wms_layers)
+        //wms_layers = [SNCI, sigef];
+    var onSingleClick = function(evt) {
+        var popupText = ""
+        var dado = ""
+
+        var coord = evt.coordinate;
+        var coordinatesConv = function(a) {
+            var coord_x = a[0].toFixed(4);
+            var coord_y = a[1].toFixed(4);
+            return "Informações do ponto" + "<br>" + "<b>Latitude/Longitude:</b>" + '&nbsp;[' + coord_x + '&nbsp;,&nbsp;' + coord_y + "]<br>"
+        }
+        var arrumatexto = function(dado) {
+                texto1 = dado.split("\n")
+                cont = 0
+                cont2 = 0
+                texto2 = []
+                temp2 = []
+                temp_html = '<html>' + coordinatesConv(ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) + '<br>' + "<table border='1' bordercolor='grey' bgcolor='White'>" + "\n"
+                while (cont < texto1.length) {
+                    temp = texto1[cont].split("=");
+                    if (temp.length > 1) {
+                        while (cont2 < temp.length) {
+                            temp[cont2] = temp[cont2].replace(/'/g, '')
+                            temp[cont2] = temp[cont2].trim()
+                            temp2.push(temp[cont2])
+                            if (cont2 == temp.length - 1) {
+                                temp_html = temp_html + "<td>" + '&nbsp;' + temp[cont2] + "</td></tr>" + "\n"
+                            } else if (cont2 == 0) {
+                                temp_html = temp_html + "<tr><td>" + '&nbsp;' + temp[cont2] + "</td>"
+                            } else {
+                                temp_html = temp_html + "<td>" + '&nbsp;' + temp[cont2] + "</td>"
+                            }
+                            cont2 = cont2 + 1;;
+                        }
+                        texto2.push(temp2)
+                        temp2 = []
+                        cont2 = 0;
+                        temp = [];
+                    } else {
+                        temp[0] = temp[0].replace(/'/g, '')
+                        temp[0] = temp[0].replace(":", '')
+                        temp[0] = temp[0].trim()
+                        if (temp[cont2] != "") {
+                            console.log("!!!")
+                        }
+                    }
+                    if (cont == texto1.length - 1) {
+                        temp_html = temp_html + "</table>" + "\n" + "</html>"
+                    }
+                    cont = cont + 1;
+                }
+                return (temp_html);
+            }
+            // busca informações da camada geojason
         var feature = map.forEachFeatureAtPixel(evt.pixel, function(
             feature,
         ) {
@@ -378,371 +438,78 @@ function init() {
             i = 0
             while (i < inf_attr.length) {
                 if (inf_attr[i] != "geometry") {
-                    //console.info(inf_attr[i])
-                    //console.info(inf_attr[i] + '= ' + feature.get(inf_attr[i]) + "\n")
-                    dado = inf_attr[i] + ':' + feature.get(inf_attr[i]) + "\n"
+                    dado = inf_attr[i] + '= ' + feature.get(inf_attr[i]) + "\n"
                 }
                 i = 1 + i
             }
         }
-        //console.log(dado);
-    });
-
-
-    var wms_layers = [];
-    wms_layers.push([sigef, 1]);
-
-
-    var onPointerMove = function(evt) {
-        if (!doHover && !doHighlight) {
-            return;
-        }
-        var pixel = map.getEventPixel(evt.originalEvent);
-        var coord = evt.coordinate;
-        var popupField;
-        var currentFeature;
-        var currentLayer;
-        var currentFeatureKeys;
-        var clusteredFeatures;
-        var popupText = '<ul>';
-        map.forEachFeatureAtPixel(pixel, function(feature, layer) {
-            // We only care about features from layers in the layersList, ignore
-            // any other layers which the map might contain such as the vector
-            // layer used by the measure tool
-            if (layersList.indexOf(layer) === -1) {
-                return;
-            }
-            var doPopup = false;
-            for (k in layer.get('fieldImages')) {
-                if (layer.get('fieldImages')[k] != "Hidden") {
-                    doPopup = true;
-                }
-            }
-            currentFeature = feature;
-            currentLayer = layer;
-            clusteredFeatures = feature.get("features");
-            var clusterFeature;
-            if (typeof clusteredFeatures !== "undefined") {
-                if (doPopup) {
-                    for (var n = 0; n < clusteredFeatures.length; n++) {
-                        clusterFeature = clusteredFeatures[n];
-                        currentFeatureKeys = clusterFeature.getKeys();
-                        popupText += '<li><table>'
-                        for (var i = 0; i < currentFeatureKeys.length; i++) {
-                            if (currentFeatureKeys[i] != 'geometry') {
-                                popupField = '';
-                                if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "inline label") {
-                                    popupField += '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</th><td>';
-                                } else {
-                                    popupField += '<td colspan="2">';
-                                }
-                                if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "header label") {
-                                    popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
-                                }
-                                if (layer.get('fieldImages')[currentFeatureKeys[i]] != "Photo") {
-                                    popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(clusterFeature.get(currentFeatureKeys[i]))) + '</td>' : '');
-                                } else {
-                                    popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + clusterFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim() + '" /></td>' : '');
-                                }
-                                popupText += '<tr>' + popupField + '</tr>';
-                            }
-                        }
-                        popupText += '</table></li>';
-                    }
-                }
-            } else {
-                currentFeatureKeys = currentFeature.getKeys();
-                if (doPopup) {
-                    popupText += '<li><table>';
-                    for (var i = 0; i < currentFeatureKeys.length; i++) {
-                        if (currentFeatureKeys[i] != 'geometry') {
-                            popupField = '';
-                            if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "inline label") {
-                                popupField += '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</th><td>';
-                            } else {
-                                popupField += '<td colspan="2">';
-                            }
-                            if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "header label") {
-                                popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
-                            }
-                            if (layer.get('fieldImages')[currentFeatureKeys[i]] != "Photo") {
-                                popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(currentFeature.get(currentFeatureKeys[i]))) + '</td>' : '');
-                            } else {
-                                popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + currentFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim() + '" /></td>' : '');
-                            }
-                            popupText += '<tr>' + popupField + '</tr>';
-                        }
-                    }
-                    popupText += '</table></li>';
-                }
-            }
-        });
-        if (popupText == '<ul>') {
-            popupText = '';
+        if (dado != "") {
+            popupText = arrumatexto(dado)
         } else {
-            popupText += '</ul>';
-        }
-
-        if (doHighlight) {
-            if (currentFeature !== highlight) {
-                if (highlight) {
-                    featureOverlay.getSource().removeFeature(highlight);
-                }
-                if (currentFeature) {
-                    var styleDefinition = currentLayer.getStyle().toString();
-
-                    if (currentFeature.getGeometry().getType() == 'Point') {
-                        var radius = styleDefinition.split('radius')[1].split(' ')[1];
-
-                        highlightStyle = new ol.style.Style({
-                            image: new ol.style.Circle({
-                                fill: new ol.style.Fill({
-                                    color: "#ffff00"
-                                }),
-                                radius: radius
-                            })
-                        })
-                    } else if (currentFeature.getGeometry().getType() == 'LineString') {
-
-                        var featureWidth = styleDefinition.split('width')[1].split(' ')[1].replace('})', '');
-
-                        highlightStyle = new ol.style.Style({
-                            stroke: new ol.style.Stroke({
-                                color: '#ffff00',
-                                lineDash: null,
-                                width: featureWidth
-                            })
+            //caso não ache no geojson, ele busca na camada WMS/WFS
+            var coord = evt.coordinate
+            var viewProjection = map.getView().getProjection();
+            var viewResolution = map.getView().getResolution();
+            var projcorrigida = ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')
+            for (i = 0; i < wms_layers.length; i++) {
+                if (wms_layers[i][1]) {
+                    var url = wms_layers[i][0].getSource().getGetFeatureInfoUrl(
+                        evt.coordinate, viewResolution, viewProjection, {
+                            'REQUEST': 'GetFeatureInfo',
+                            'outputFormat': 'text/plain',
                         });
 
+                    if (url) {
+                        var request_http = new XMLHttpRequest();
+                        var body = 'Arun';
+                        url_cors = "https://cors-anywhere.herokuapp.com/"
+                        console.log("aqui", i, url)
+                        request_http.open("GET", url_cors + url, true);
+                        request_http.onload = request_http.onerror = function() {
+                            if (request_http.readyState === 4 && request_http.status === 200) {
+                                popupText = arrumatexto(request_http.responseText)
+                                if (popupText) {
+                                    overlayPopup.setPosition(coord);
+                                    console.log(popupText)
+                                    content.innerHTML = popupText;
+                                    container.style.display = 'block';
+                                } else {
+                                    container.style.display = 'none';
+                                    closer.blur();
+                                }
+                            } else {
+                                popupText = arrumatexto(request_http.responseText)
+                            }
+                        }
+                        request_http.send(body);
                     } else {
-                        highlightStyle = new ol.style.Style({
-                            fill: new ol.style.Fill({
-                                color: '#ffff00'
-                            })
-                        })
-                    }
-                    featureOverlay.getSource().addFeature(currentFeature);
-                    featureOverlay.setStyle(highlightStyle);
-                }
-                highlight = currentFeature;
-            }
-        }
-
-        if (doHover) {
-            if (popupText) {
-                overlayPopup.setPosition(coord);
-                content.innerHTML = popupText;
-                container.style.display = 'block';
-            } else {
-                container.style.display = 'none';
-                closer.blur();
-            }
-        }
-    };
-
-    var doHighlight = false;
-    var doHover = false;
-    var sketch;
-
-    var onSingleClick = function(evt) {
-        if (doHover) {
-            return;
-        }
-        if (sketch) {
-            return;
-        }
-        var pixel = map.getEventPixel(evt.originalEvent);
-        var coord = evt.coordinate;
-        var popupField;
-        var currentFeature;
-        var currentFeatureKeys;
-        var clusteredFeatures;
-        var popupText = '<ul>';
-        map.forEachFeatureAtPixel(pixel, function(feature, layer) {
-            if (feature instanceof ol.Feature) {
-                var doPopup = false;
-                for (k in layer.get('fieldImages')) {
-                    if (layer.get('fieldImages')[k] != "Hidden") {
-                        doPopup = true;
+                        console.log("clique vazio!")
                     }
                 }
-                currentFeature = feature;
-                clusteredFeatures = feature.get("features");
-                var clusterFeature;
-                if (typeof clusteredFeatures !== "undefined") {
-                    if (doPopup) {
-                        for (var n = 0; n < clusteredFeatures.length; n++) {
-                            clusterFeature = clusteredFeatures[n];
-                            currentFeatureKeys = clusterFeature.getKeys();
-                            popupText += '<li><table>'
-                            for (var i = 0; i < currentFeatureKeys.length; i++) {
-                                if (currentFeatureKeys[i] != 'geometry') {
-                                    popupField = '';
-                                    if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "inline label") {
-                                        popupField += '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</th><td>';
-                                    } else {
-                                        popupField += '<td colspan="2">';
-                                    }
-                                    if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "header label") {
-                                        popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
-                                    }
-                                    if (layer.get('fieldImages')[currentFeatureKeys[i]] != "Photo") {
-                                        popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(clusterFeature.get(currentFeatureKeys[i]))) + '</td>' : '');
-                                    } else {
-                                        popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + clusterFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim() + '" /></td>' : '');
-                                    }
-                                    popupText += '<tr>' + popupField + '</tr>';
-                                }
-                            }
-                            popupText += '</table></li>';
-                        }
-                    }
-                } else {
-                    currentFeatureKeys = currentFeature.getKeys();
-                    if (doPopup) {
-                        popupText += '<li><table>';
-                        for (var i = 0; i < currentFeatureKeys.length; i++) {
-                            if (currentFeatureKeys[i] != 'geometry') {
-                                popupField = '';
-                                if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "inline label") {
-                                    popupField += '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</th><td>';
-                                } else {
-                                    popupField += '<td colspan="2">';
-                                }
-                                if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "header label") {
-                                    popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
-                                }
-                                if (layer.get('fieldImages')[currentFeatureKeys[i]] != "Photo") {
-                                    popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(String(currentFeature.get(currentFeatureKeys[i]))) + '</td>' : '');
-                                } else {
-                                    popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + currentFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim() + '" /></td>' : '');
-                                }
-                                popupText += '<tr>' + popupField + '</tr>';
-                            }
-                        }
-                        popupText += '</table>';
-                    }
-                }
+
             }
-        });
-        if (popupText == '<ul>') {
-            popupText = '';
+        }
+        if (popupText) {
+
+            overlayPopup.setPosition(coord);
+            content.innerHTML = popupText;
+            container.style.display = 'block';
         } else {
-            popupText += '</ul>';
+            container.style.display = 'none';
+            closer.blur();
         }
-
-        /* lucas */
-        var arrumatexto = function(dado) {
-            texto1 = dado.split("\n")
-            cont = 0
-            cont2 = 0
-            texto2 = []
-            temp2 = []
-
-            temp_html = '<html>' + coordinatesConv(ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) + '<br>' + "<table border='1' bordercolor='grey' bgcolor='White'>" + "\n"
-            while (cont < texto1.length) {
-                temp = texto1[cont].split("=");
-                if (temp.length > 1) {
-                    while (cont2 < temp.length) {
-                        temp[cont2] = temp[cont2].replace(/'/g, '')
-                        temp[cont2] = temp[cont2].trim()
-                        temp2.push(temp[cont2])
-                        if (cont2 == temp.length - 1) {
-                            temp_html = temp_html + "<td>" + '&nbsp;' + temp[cont2] + "</td></tr>" + "\n"
-                        } else if (cont2 == 0) {
-                            temp_html = temp_html + "<tr><td>" + '&nbsp;' + temp[cont2] + "</td>"
-                        } else {
-                            temp_html = temp_html + "<td>" + '&nbsp;' + temp[cont2] + "</td>"
-                        }
-                        cont2 = cont2 + 1;;
-                    }
-                    texto2.push(temp2)
-                    temp2 = []
-                    cont2 = 0;
-                    temp = [];
-                } else {
-                    temp[0] = temp[0].replace(/'/g, '')
-                    temp[0] = temp[0].replace(":", '')
-                    temp[0] = temp[0].trim()
-                    if (temp[cont2] != "") {
-                        console.log("!!!")
-                    }
-                }
-                if (cont == texto1.length - 1) {
-                    temp_html = temp_html + "</table>" + "\n" + "</html>"
-                }
-                cont = cont + 1;
-            }
-            return (temp_html);
-
-        }
-
-        var coord = evt.coordinate
-        var viewProjection = map.getView().getProjection();
-        var viewResolution = map.getView().getResolution();
-        var projcorrigida = ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')
-        for (i = 0; i < wms_layers.length; i++) {
-            var coordinatesConv = function(a) {
-                var coord_x = a[0].toFixed(4);
-                var coord_y = a[1].toFixed(4);
-                return "Informações do ponto" + "<br>" + "<b>Latitude/Longitude:</b>" + '&nbsp;[' + coord_x + '&nbsp;,&nbsp;' + coord_y + "]<br>"
-            }
-            if (wms_layers[i][1]) {
-                var url = wms_layers[i][0].getSource().getGetFeatureInfoUrl(
-                    evt.coordinate, viewResolution, viewProjection, {
-                        'REQUEST': 'GetFeatureInfo',
-                        'outputFormat': 'text/plain',
-                    });
-                if (url) {
-                    var request_http = new XMLHttpRequest();
-                    var body = 'Arun';
-                    url_cors = "https://cors-anywhere.herokuapp.com/"
-                    request_http.open("GET", url_cors + url, true);
-                    request_http.onload = request_http.onerror = function() {
-                        if (request_http.readyState === 4 && request_http.status === 200) {
-                            popupText = arrumatexto(request_http.responseText)
-                            if (popupText) {
-                                overlayPopup.setPosition(coord);
-                                content.innerHTML = popupText;
-                                container.style.display = 'block';
-                            } else {
-                                container.style.display = 'none';
-                                closer.blur();
-                            }
-                        } else {
-                            popupText = arrumatexto(request_http.responseText)
-                            if (popupText) {
-                                overlayPopup.setPosition(coord);
-                                content.innerHTML = popupText;
-                                container.style.display = 'block';
-                            } else {
-                                container.style.display = 'none';
-                                closer.blur();
-                            }
-                        }
-                    }
-
-                    request_http.send(body);
-
-                    popupText = '<html>' + coordinatesConv(ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) + '<br>' + '</html>'
-                } else {
-                    console.log("clique vazio!")
-                }
-            }
-        }
-
+        popupText = '<html>' + coordinatesConv(ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) + '<br>' + '</html>'
     };
 
     map.on('singleclick', function(evt) {
         onSingleClick(evt);
     });
 
-
     var tree = new layerTree({ map: map, target: 'layertree', messages: 'messageBar' })
-        .createRegistry(map.getLayers().item(0))
-        .createRegistry(map.getLayers().item(1))
-        .createRegistry(map.getLayers().item(2))
-        .createRegistry(map.getLayers().item(3));
+        .createRegistry(map.getLayers().item(0));
+    //    .createRegistry(map.getLayers().item(1));
+    //.createRegistry(map.getLayers().item(2));
+    //.createRegistry(map.getLayers().item(3));
 
     document.getElementById('checkwmslayer').addEventListener('click', function() {
         tree.checkWmsLayer(this.form);
@@ -751,6 +518,7 @@ function init() {
         evt.preventDefault();
         tree.addWmsLayer(this);
         this.parentNode.style.display = 'none';
+
     });
     document.getElementById('wmsurl').addEventListener('change', function() {
         tree.removeContent(this.form.layer)
