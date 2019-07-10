@@ -164,15 +164,15 @@ td {
 }
 
 .layertree-buttons .addwms {
-    background-image: url('../pictures/button_wms.png');
+    background-image: url('./pictures/button_wms.png');
 }
 
 .layertree-buttons .addwfs {
-    background-image: url('../pictures/button_wmf.png');
+    background-image: url('./pictures/button_wmf.png');
 }
 
 .layertree-buttons .addtms {
-    background-image: url('../pictures/button_tms.png');
+    background-image: url('./pictures/button_tms.png');
 }
 
 .toggleable {

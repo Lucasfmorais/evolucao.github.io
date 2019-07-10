@@ -156,7 +156,7 @@ layerTree.prototype.checkWmsLayer = function(form) {
 
     url = /\?/.test(url) ? url + '&' : url + '?';
     console.log("coco:", url)
-    url = "https://cors-anywhere.herokuapp.com/" + url + 'REQUEST=GetCapabilities&SERVICE=OMS';
+    url = "https://cors-anywhere.herokuapp.com/" + url + 'REQUEST=GetCapabilities&SERVICE=WMS';
     request.open('GET', url, true);
     request.send();
     //content.innerHTML = this.form.parentNode.style.display = 'none';
@@ -164,6 +164,9 @@ layerTree.prototype.checkWmsLayer = function(form) {
 
 
 layerTree.prototype.addWmsLayer = function(form) {
+    var pato = form
+        //console.log(form.layer.value)
+    console.log(form.tmsurl.value)
     var params = {
         url: form.server.value,
         params: {
@@ -249,7 +252,6 @@ function init() {
         return false;
     };
 
-
     var overlayPopup = new ol.Overlay({
         element: container
     });
@@ -305,14 +307,12 @@ function init() {
         name: 'Capitais Mundiais'
     })
 
-
     var bairros = new ol.layer.Vector({
         source: new ol.source.Vector({
             format: new ol.format.GeoJSON({
                 defaultDataProjection: 'EPSG:4326'
             }),
             url: './layers/bairrosjti3.geojson',
-
         }),
         style: new ol.style.Style({
             fill: new ol.style.Fill({ color: 'rgba(17, 6, 62, 0.150)' }),
@@ -516,24 +516,25 @@ function init() {
     });
 
     var tree = new layerTree({ map: map, target: 'layertree', messages: 'messageBar' })
-        .createRegistry(map.getLayers().item(0));
-    //    .createRegistry(map.getLayers().item(1));
+        .createRegistry(map.getLayers().item(0))
+        .createRegistry(map.getLayers().item(1));
     //.createRegistry(map.getLayers().item(2));
     //.createRegistry(map.getLayers().item(3));
 
     document.getElementById('checkwmslayer').addEventListener('click', function() {
         tree.checkWmsLayer(this.form);
     });
+
     document.getElementById('addwms_form').addEventListener('submit', function(evt) {
         evt.preventDefault();
         tree.addWmsLayer(this);
-        this.parentNode.style.display = 'none';
-
     });
+
     document.getElementById('wmsurl').addEventListener('change', function() {
         tree.removeContent(this.form.layer)
             .removeContent(this.form.format);
     });
+
     document.getElementById('addwfs_form').addEventListener('submit', function(evt) {
         evt.preventDefault();
         tree.addWfsLayer(this);
