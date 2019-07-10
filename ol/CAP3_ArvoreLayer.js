@@ -448,7 +448,7 @@ function init() {
             i = 0
             while (i < inf_attr.length) {
                 if (inf_attr[i] != "geometry") {
-                    dado = inf_attr[i] + '= ' + feature.get(inf_attr[i]) + "\n"
+                    dado = dado + inf_attr[i] + '= ' + feature.get(inf_attr[i]) + "\n"
                 }
                 i = 1 + i
             }
