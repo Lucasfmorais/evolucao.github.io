@@ -156,7 +156,7 @@ layerTree.prototype.checkWmsLayer = function(form) {
 
     url = /\?/.test(url) ? url + '&' : url + '?';
     console.log("coco:", url)
-    url = "https://cors-anywhere.herokuapp.com/" + url + 'REQUEST=GetCapabilities&SERVICE=WMS';
+    url = "https://cors-anywhere.herokuapp.com/" + url + 'REQUEST=GetCapabilities&SERVICE=OMS';
     request.open('GET', url, true);
     request.send();
     //content.innerHTML = this.form.parentNode.style.display = 'none';
@@ -367,9 +367,10 @@ function init() {
             new ol.control.MousePosition({
                 projection: 'EPSG:4326',
                 coordinateFormat: function(coordinates) {
-                    var coord_x = coordinates[0].toFixed(4);
-                    var coord_y = coordinates[1].toFixed(4);
-                    return "WGS 84: " + coord_x + ', ' + coord_y;
+                    var coord_x = coordinates[0].toFixed(6);
+                    var coord_y = coordinates[1].toFixed(6);
+                    var coord_z = map.getView().getZoom();
+                    return "WGS 84: " + coord_x + ', ' + coord_y + ', ' + coord_z + "zoom";
                 },
                 target: 'coordinates'
             })
@@ -390,8 +391,8 @@ function init() {
 
         var coord = evt.coordinate;
         var coordinatesConv = function(a) {
-            var coord_x = a[0].toFixed(4);
-            var coord_y = a[1].toFixed(4);
+            var coord_x = a[0].toFixed(6);
+            var coord_y = a[1].toFixed(6);
             return "Informações do ponto" + "<br>" + "<b>Latitude/Longitude:</b>" + '&nbsp;[' + coord_x + '&nbsp;,&nbsp;' + coord_y + "]<br>"
         }
         var arrumatexto = function(dado) {
