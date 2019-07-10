@@ -348,7 +348,7 @@ function init() {
                 source: new ol.source.XYZ({
                     url: './tiles/{z}/{x}/{y}.png'
                 }),
-                name: 'Google Earth'
+                name: 'drone'
             }),
             //'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}'
             //'https://storage.googleapis.com/land_test/Test_landSAt/{z}/{x}/{y}.jpg'
