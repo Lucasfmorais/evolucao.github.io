@@ -27,9 +27,7 @@ var layerTree = function(options) {
             idCounter += 1;
             var layerDiv = document.createElement('div');
             layerDiv.className = buffer ? 'layer ol-unselectable buffering' : 'layer ol-unselectable';
-            console.log("leee")
             layerDiv.title = layer.get('name') || 'Camada sem nome';
-            console.log(layerDiv.title)
             layerDiv.id = layer.get('id');
             var layerSpan = document.createElement('span');
             layerSpan.textContent = layerDiv.title;
@@ -42,8 +40,7 @@ var layerTree = function(options) {
             if (evt.element instanceof ol.layer.Vector) {
                 this.createRegistry(evt.element, true);
             } else {
-                this.createRegistry(evt.element);
-                //this.form.parentNode.style.display = 'none';
+                //this.createRegistry(evt.element);
             }
         }, this);
     } else {
@@ -318,7 +315,7 @@ function init() {
 
         }),
         style: new ol.style.Style({
-            //fill: new ol.style.Fill({ color: 'rgba(17, 6, 62, 0.150)' }),
+            fill: new ol.style.Fill({ color: 'rgba(17, 6, 62, 0.150)' }),
             stroke: new ol.style.Stroke({
                 color: 'rgba(11, 12, 11, 0.918)',
                 width: .5,
@@ -378,8 +375,8 @@ function init() {
             })
         ],
         view: new ol.View({
-            center: ol.proj.fromLonLat([-51.714605897875174, -17.86019382887064]),
-            zoom: 21
+            center: ol.proj.fromLonLat([-51.7257015, -17.8869303]),
+            zoom: 12
         })
     });
 
@@ -447,12 +444,10 @@ function init() {
         });
         if (feature) {
             inf_attr = feature.getKeys()
-            console.log("aqui", inf_attr)
             i = 0
             while (i < inf_attr.length) {
                 if (inf_attr[i] != "geometry") {
-                    dado = dado + inf_attr[i] + '= ' + feature.get(inf_attr[i]) + "\n"
-                    console.log("aqui", dado)
+                    dado = inf_attr[i] + '= ' + feature.get(inf_attr[i]) + "\n"
                 }
                 i = 1 + i
             }
@@ -520,8 +515,8 @@ function init() {
     });
 
     var tree = new layerTree({ map: map, target: 'layertree', messages: 'messageBar' })
-        .createRegistry(map.getLayers().item(0))
-        .createRegistry(map.getLayers().item(1));
+        .createRegistry(map.getLayers().item(0));
+    //    .createRegistry(map.getLayers().item(1));
     //.createRegistry(map.getLayers().item(2));
     //.createRegistry(map.getLayers().item(3));
 
@@ -544,4 +539,5 @@ function init() {
         this.parentNode.style.display = 'none';
     });
 }
+
 document.addEventListener('DOMContentLoaded', init);
