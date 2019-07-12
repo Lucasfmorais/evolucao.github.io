@@ -34,7 +34,7 @@ var layerTree = function(options) {
         controlDiv.appendChild(this.createButton('addwfs', 'Adicionar camada WFS', 'addlayer'));
         controlDiv.appendChild(this.createButton('newvector', 'Nova Camada Vetorial', 'addlayer'));
         controlDiv.appendChild(this.createButton('addvector', 'Adiconar camada vetorial', 'addlayer'));
-        controlDiv.appendChild(this.createButton('deletelayer', 'Remove Layer', 'deletelayer'));
+        controlDiv.appendChild(this.createButton('deletelayer', 'Remover camada', 'deletelayer'));
         containerDiv.appendChild(controlDiv);
         this.layerContainer = document.createElement('div');
         this.layerContainer.className = 'layercontainer';
@@ -194,9 +194,9 @@ layerTree.prototype.createButton = function(elemName, elemTitle, elemType, layer
                     var layer = _this.getLayerById(_this.selectedLayer.id);
                     console.log(layer);
                     _this.map.removeLayer(layer);
-                    _this.messages.textContent = 'Layer removed successfully.';
+                    _this.messages.textContent = 'Camada removida com sucesso.';
                 } else {
-                    _this.messages.textContent = 'No selected layer to remove.';
+                    _this.messages.textContent = 'Nenhuma camada selecionada para remover.';
                 }
             });
             return buttonElem;
@@ -666,14 +666,14 @@ toolBar.prototype.addSelectControls = function() {
     this.selectInteraction = selectInteraction;
     var selectSingle = new ol.control.Interaction({
         label: ' ',
-        tipLabel: 'Select feature',
+        tipLabel: 'Selecionar feição',
         className: 'ol-singleselect ol-unselectable ol-control',
         interaction: selectInteraction
     });
     var boxInteraction = new ol.interaction.DragBox();
     var selectMulti = new ol.control.Interaction({
         label: ' ',
-        tipLabel: 'Select features with a box',
+        tipLabel: 'Selecione recursos com uma caixa',
         className: 'ol-multiselect ol-unselectable ol-control',
         interaction: boxInteraction
     });
@@ -692,7 +692,7 @@ toolBar.prototype.addSelectControls = function() {
     var controlDiv = document.createElement('div');
     controlDiv.className = 'ol-deselect ol-unselectable ol-control';
     var controlButton = document.createElement('button');
-    controlButton.title = 'Remove selection(s)';
+    controlButton.title = 'Remover seleção';
     controlDiv.appendChild(controlButton);
     controlButton.addEventListener('click', function() {
         selectInteraction.getFeatures().clear();
@@ -729,7 +729,7 @@ toolBar.prototype.addEditingToolBar = function() {
     this.editingControls = new ol.Collection();
     var drawPoint = new ol.control.Interaction({
         label: ' ',
-        tipLabel: 'Add points',
+        tipLabel: 'Adiconar pontos',
         className: 'ol-addpoint ol-unselectable ol-control',
         interaction: this.handleEvents(new ol.interaction.Draw({
             type: 'Point',
@@ -739,7 +739,7 @@ toolBar.prototype.addEditingToolBar = function() {
     this.editingControls.push(drawPoint);
     var drawLine = new ol.control.Interaction({
         label: ' ',
-        tipLabel: 'Add lines',
+        tipLabel: 'Adiconar linha',
         className: 'ol-addline ol-unselectable ol-control',
         interaction: this.handleEvents(new ol.interaction.Draw({
             type: 'LineString',
@@ -749,7 +749,7 @@ toolBar.prototype.addEditingToolBar = function() {
     this.editingControls.push(drawLine);
     var drawPolygon = new ol.control.Interaction({
         label: ' ',
-        tipLabel: 'Add polygons',
+        tipLabel: 'Adicionar poligono',
         className: 'ol-addpolygon ol-unselectable ol-control',
         interaction: this.handleEvents(new ol.interaction.Draw({
             type: 'Polygon',
@@ -760,7 +760,7 @@ toolBar.prototype.addEditingToolBar = function() {
     this.activeFeatures = new ol.Collection();
     var modifyFeature = new ol.control.Interaction({
         label: ' ',
-        tipLabel: 'Modify features',
+        tipLabel: 'Modificar feição',
         className: 'ol-modifyfeat ol-unselectable ol-control',
         interaction: new ol.interaction.Modify({
             features: this.activeFeatures
@@ -769,7 +769,7 @@ toolBar.prototype.addEditingToolBar = function() {
     this.editingControls.push(modifyFeature);
     var snapFeature = new ol.control.Interaction({
         label: ' ',
-        tipLabel: 'Snap to paths, and vertices',
+        tipLabel: 'Colar nos vertices',
         className: 'ol-snap ol-unselectable ol-control',
         interaction: new ol.interaction.Snap({
             features: this.activeFeatures
@@ -779,7 +779,7 @@ toolBar.prototype.addEditingToolBar = function() {
     this.editingControls.push(snapFeature);
     var removeFeature = new ol.control.Interaction({
         label: ' ',
-        tipLabel: 'Remove features',
+        tipLabel: 'Remover Feições',
         className: 'ol-removefeat ol-unselectable ol-control',
         interaction: new ol.interaction.RemoveFeature({
             features: this.activeFeatures
@@ -788,7 +788,7 @@ toolBar.prototype.addEditingToolBar = function() {
     this.editingControls.push(removeFeature);
     var dragFeature = new ol.control.Interaction({
         label: ' ',
-        tipLabel: 'Drag features',
+        tipLabel: 'Mover feição',
         className: 'ol-dragfeat ol-unselectable ol-control',
         interaction: new ol.interaction.DragFeature({
             features: this.activeFeatures
@@ -1061,7 +1061,7 @@ ol.control.NavigationHistory = function(opt_options) {
     var backButton = document.createElement('button');
     backButton.className = 'ol-navhist-back';
     backButton.textContent = options.backButtonLabel || '◀';
-    backButton.title = options.backButtonTipLabel || 'Previous view';
+    backButton.title = options.backButtonTipLabel || 'Visualização prévia';
     backButton.addEventListener('click', function(evt) {
         var historyArray = _this.get('history');
         var currIndex = _this.get('index');
@@ -1079,7 +1079,7 @@ ol.control.NavigationHistory = function(opt_options) {
     var nextButton = document.createElement('button');
     nextButton.className = 'ol-navhist-next';
     nextButton.textContent = options.nextButtonLabel || '▶';
-    nextButton.title = options.nextButtonTipLabel || 'Next view';
+    nextButton.title = options.nextButtonTipLabel || 'Proxima visualização';
     nextButton.addEventListener('click', function(evt) {
         var historyArray = _this.get('history');
         var currIndex = _this.get('index');
@@ -1157,7 +1157,7 @@ ol.control.ZoomTo = function(opt_options) {
     controlDiv.className = options.class || 'ol-unselectable ol-control';
     var controlButton = document.createElement('button');
     controlButton.textContent = options.label || '';
-    controlButton.title = options.tipLabel || 'Zoom to extent';
+    controlButton.title = options.tipLabel || 'Zoom para extensão';
     controlButton.addEventListener('click', function(evt) {
         var zoomCandidate = _this.get('extentFunction')();
         if (zoomCandidate instanceof ol.geom.SimpleGeometry ||
@@ -1178,11 +1178,11 @@ toolBar.prototype.addExtentControls = function() {
     var _this = this;
     var zoomFull = new ol.control.ZoomToExtent({
         label: ' ',
-        tipLabel: 'Zoom to full extent'
+        tipLabel: 'Zoom para extensão'
     });
     var zoomToLayer = new ol.control.ZoomTo({
         class: 'ol-zoom-layer ol-unselectable ol-control',
-        tipLabel: 'Zoom to layer extent',
+        tipLabel: 'Zoom para extensão',
         extentFunction: function() {
             var source = _this.layertree.getLayerById(_this.layertree.selectedLayer.id).getSource();
             if (source.getExtent()) {
@@ -1193,7 +1193,7 @@ toolBar.prototype.addExtentControls = function() {
     });
     var zoomToSelected = new ol.control.ZoomTo({
         class: 'ol-zoom-selected ol-unselectable ol-control',
-        tipLabel: 'Zoom to selected feature',
+        tipLabel: 'Zoom para camada selecionada',
         extentFunction: function() {
             var features = _this.selectInteraction.getFeatures();
             if (features.getLength() === 1) {
@@ -1249,12 +1249,12 @@ ol.control.Projection = function(opt_options) {
     var _this = this;
     var projSwitcher = document.createElement('select');
     var webMercator = document.createElement('option');
-    webMercator.value = 'EPSG:3857';
-    webMercator.textContent = 'EPSG:3857';
+    webMercator.value = 'EPSG:4326';
+    webMercator.textContent = 'EPSG:4326';
     projSwitcher.appendChild(webMercator);
     var plateCarree = document.createElement('option');
-    plateCarree.value = 'EPSG:4326';
-    plateCarree.textContent = 'EPSG:4326';
+    plateCarree.value = 'EPSG:3857';
+    plateCarree.textContent = 'EPSG:3857';
     projSwitcher.appendChild(plateCarree);
     projSwitcher.addEventListener('change', function(evt) {
         var view = _this.getMap().getView();
@@ -1389,7 +1389,7 @@ function init() {
 
     var measureControl = new ol.control.Interaction({
         label: ' ',
-        tipLabel: 'Measure distances and areas',
+        tipLabel: 'Calcular distâncias e áreas',
         className: 'ol-measure ol-unselectable ol-control',
         interaction: new ol.interaction.Measure({
             map: map
