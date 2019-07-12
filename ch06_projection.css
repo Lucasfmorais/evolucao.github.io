@@ -192,6 +192,7 @@ body {
     border-color: orange;
     min-height: 2em;
     height: auto;
+    background-color: rgba(228, 139, 80, 0.095);
 }
 
 .layer div {
